@@ -6,7 +6,8 @@ namespace _9_ClassesChallenge
     {
         public static void Main(string[] args)
         {
-
+            Human h1 = new Human();
+            Human h2 = new Human("John", "Smith");
         }
     }
 }
