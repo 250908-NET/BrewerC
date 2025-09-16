@@ -24,7 +24,7 @@ namespace _8_LoopsChallenge.Tests
         [Fact]
         public void UseForShouldReturnHowManyEvenInts()
         {
-            Assert.Equal(Program.UseFor(oddsAndEvens), 10);
+            Assert.Equal(10, Program.UseFor(oddsAndEvens));
 
             //keeping the below to remember how to test console values and set them..
             // Console.SetOut(output);
@@ -43,7 +43,7 @@ namespace _8_LoopsChallenge.Tests
         [Fact]
         public void UseForEachShouldReturnHowManyEvenObjects()
         {
-            Assert.Equal(Program.UseForEach(oddsAndEvensDiffTypes), 5);
+            Assert.Equal(5, Program.UseForEach(oddsAndEvensDiffTypes));
         }
 
         // [Fact]
@@ -86,7 +86,7 @@ namespace _8_LoopsChallenge.Tests
             strings[2] = new List<string> { "be", "okay...", "I'm" };
             strings[3] = new List<string> { "sorry.", "You", "can" };
             strings[4] = new List<string> { "rest", "now.", "\n" };
-            Assert.Equal("Tony look at me. We're going to be okay... I'm sorry. You can rest now. \n ", Program.LoopdyLoop(strings));
+            Assert.Equal("Tony look at me. We're going to be okay... I'm sorry. You can rest now. \n", Program.LoopdyLoop(strings));
         }
 
 
