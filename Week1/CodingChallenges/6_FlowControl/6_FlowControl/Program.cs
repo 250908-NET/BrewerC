@@ -1,8 +1,5 @@
-﻿
-
-
-
-using System;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace _6_FlowControl
 {
@@ -12,6 +9,9 @@ namespace _6_FlowControl
         {
         }
 
+        private static string registeredUsername = "";
+        private static string registeredPassword = "";
+
         /// <summary>
         /// This method gets a valid temperature between -40 asnd 135 inclusive from the user
         /// and returns the valid int. 
@@ -19,7 +19,18 @@ namespace _6_FlowControl
         /// <returns></returns>
         public static int GetValidTemperature()
         {
-            throw new NotImplementedException($"GetValidTemperature() has not been implemented.");
+            int temp = int.MinValue;
+            while (temp == int.MinValue)
+            {
+                try
+                {
+                    string input = Console.ReadLine();
+                    int.TryParse(input, out int inputTemp);
+                    if (inputTemp >= -40 && inputTemp <= 135) temp = inputTemp;
+                }
+                catch {}
+            }
+            return temp;
         }
 
         /// <summary>
@@ -39,7 +50,46 @@ namespace _6_FlowControl
         /// <param name="temp"></param>
         public static void GiveActivityAdvice(int temp)
         {
-            throw new NotImplementedException($"GiveActivityAdvice() has not been implemented.");
+            if (temp < -20)
+            {
+                Console.Write("hella cold");
+            }
+            else if (temp >= -20 && temp < 0)
+            {
+                Console.Write("pretty cold");
+            }
+            else if (temp >= 0 && temp < 20)
+            {
+                Console.Write("cold");
+            }
+            else if (temp >= 20 && temp < 40)
+            {
+                Console.Write("thawed out");
+            }
+            else if (temp >= 40 && temp < 60)
+            {
+                Console.Write("feels like Autumn");
+            }
+            else if (temp >= 60 && temp < 80)
+            {
+                Console.Write("perfect outdoor workout temperature");
+            }
+            else if (temp >= 80 && temp < 90)
+            {
+                Console.Write("niiice");
+            }
+            else if (temp >= 90 && temp < 100)
+            {
+                Console.Write("hella hot");
+            }
+            else if (temp >= 100 && temp <= 135)
+            {
+                Console.Write("hottest");
+            }
+            else
+            {
+                Console.Write("Temperature out of range");
+            }
         }
 
         /// <summary>
@@ -49,8 +99,14 @@ namespace _6_FlowControl
         /// </summary>
         public static void Register()
         {
-            throw new NotImplementedException($"Register() has not been implemented.");
+            string username = Console.ReadLine();
+            string password = Console.ReadLine();
+
+            Program.registeredUsername = username;
+            Program.registeredPassword = password;
+            Console.WriteLine("Password saved");
         }
+
 
         /// <summary>
         /// This method gets username and password from the user and
@@ -62,7 +118,10 @@ namespace _6_FlowControl
         /// <returns></returns>
         public static bool Login()
         {
-            throw new NotImplementedException($"Login() has not been implemented.");
+            string username = Console.ReadLine();
+            string password = Console.ReadLine();
+
+            return (username.Equals(Program.registeredUsername)) && (password.Equals(Program.registeredPassword));
         }
 
         /// <summary>
@@ -75,7 +134,18 @@ namespace _6_FlowControl
         /// <param name="temp"></param>
         public static void GetTemperatureTernary(int temp)
         {
-            throw new NotImplementedException($"GetTemperatureTernary() has not been implemented.");
+            if (temp <= 42)
+            {
+                Console.WriteLine($"{temp} is too cold!");
+            }
+            else if (temp >= 43 && temp <= 78)
+            {
+                Console.WriteLine("${temp} is an ok temperature");
+            }
+            else
+            {
+                Console.WriteLine($"{temp} is too hot!");
+            }
         }
     }//EoP
 }//EoN
