@@ -4,7 +4,54 @@ namespace HangmanCA
 {
     class Program
     {
+        public static int maxGuesses = 6;
+
         public static void Main(string[] args)
+        {
+
+            while (true)
+            {
+                Console.WriteLine("1: New Game");
+                Console.WriteLine("2: Set Max Wrong Guesses");
+                // Console.WriteLine("3: Set Max Word Length");
+                Console.WriteLine("4: Exit");
+                string input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        runGame();
+                        break;
+                    case "2":
+                        Console.WriteLine("Enter your number for max wrong guesses (min 3)");
+                        string numInput = Console.ReadLine();
+                        try
+                        {
+                            int num = int.Parse(numInput);
+                            if (num < 3)
+                            {
+                                Console.WriteLine("Enter a number greater than 3");
+                            }
+                            else
+                            {
+                                maxGuesses = num;
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Enter a number a number");
+                        }
+                        break;
+                    case "4":
+                        return;
+                        break;
+                    default:
+                        Console.WriteLine("Enter a number");
+                        break;
+                }
+            }
+        }
+
+        public static void runGame()
         {
             // indicate application startup
             Console.WriteLine("Starting Hangman Game...");
@@ -14,23 +61,24 @@ namespace HangmanCA
 
             // placeholder for game loop
             Dictionary<char, bool> guessedLetters = new Dictionary<char, bool>();
-            foreach (char c in "qwertyuiopasdfghjklzxcvbnm")
+            foreach (char c in "abcdefghijklmnopqrstuvwxyz")
             {
                 guessedLetters[c] = false;
             }
             int guesses = 0;
-            const int maxGuesses = 6;
-            string[] words = new string[] { "Hello", "World", "Peace", "Alphabet", "Ratatouille" };
+            // const int maxGuesses = 6;
+            // string[] words = new string[] { "Hello", "World", "Peace", "Alphabet", "Ratatouille" };
             Random random = new Random();
-            string selectedWord = words[random.Next(words.Length)];
+            string selectedWord = getRandomWord();
             string selectedWordLower = selectedWord.ToLower();
             string guessedWord = getCurrentWord(guessedLetters, selectedWord);
 
             while (guesses != maxGuesses && selectedWord != guessedWord)
             {
-                Console.WriteLine($"Word: {guessedWord}");
-                Console.WriteLine($"Guessed Letters: {string.Join(',', getGuessedLetters(guessedLetters))}");
-                Console.WriteLine($"Wrong guesses: {guesses} out of {maxGuesses}");
+                Console.WriteLine("\r\r\r\r------------------------------------------------");
+                Console.WriteLine($"\r\r\r\rWord: {guessedWord}");
+                Console.WriteLine($"\r\r\r\rGuessed Letters: {string.Join(',', getGuessedLetters(guessedLetters))}");
+                Console.WriteLine($"\r\r\r\rWrong guesses: {guesses} out of {maxGuesses}");
 
                 // IN LOOP
 
@@ -61,6 +109,8 @@ namespace HangmanCA
                 }
                 guessedWord = getCurrentWord(guessedLetters, selectedWord);
             }
+
+            Console.WriteLine("------------------------------------------------");
             if (selectedWord == guessedWord)
             {
                 Console.WriteLine($"Congratulations! The Word is {selectedWord}!");
@@ -74,7 +124,7 @@ namespace HangmanCA
         public static List<char> getGuessedLetters(Dictionary<char, bool> guessedLetters)
         {
             List<char> letters = new List<char>();
-            foreach (char c in "qwertyuiopasdfghjklzxcvbnm")
+            foreach (char c in "abcdefghijklmnopqrstuvwxyz")
             {
                 if (guessedLetters[c])
                 {
@@ -113,5 +163,15 @@ namespace HangmanCA
             return currentGuess;
         }
 
+        public static string getRandomWord()
+        {
+            string filePath = "words_alpha.txt";
+            int lineCount = File.ReadLines(filePath).Count();
+            Random random = new Random();
+            int targetLine = random.Next(lineCount);
+
+            string selectedWord = File.ReadLines(filePath).Skip(targetLine).First();
+            return selectedWord;
+        }
     }
 }
