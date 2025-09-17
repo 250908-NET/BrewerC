@@ -1,7 +1,3 @@
 Hello World!
-
-
-
-
 Replace me!
 
