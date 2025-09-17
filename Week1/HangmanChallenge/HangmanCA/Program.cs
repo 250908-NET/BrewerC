@@ -13,11 +13,105 @@ namespace HangmanCA
             Console.WriteLine("Welcome to Hangman!");
 
             // placeholder for game loop
+            Dictionary<char, bool> guessedLetters = new Dictionary<char, bool>();
+            foreach (char c in "qwertyuiopasdfghjklzxcvbnm")
+            {
+                guessedLetters[c] = false;
+            }
+            int guesses = 0;
+            const int maxGuesses = 6;
+            string[] words = new string[] { "Hello", "World", "Peace", "Alphabet", "Ratatouille" };
+            Random random = new Random();
+            string selectedWord = words[random.Next(words.Length)];
+            string selectedWordLower = selectedWord.ToLower();
+            string guessedWord = getCurrentWord(guessedLetters, selectedWord);
 
-            // indicate application shutdown
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
-            Console.WriteLine("Exiting Hangman Game...");
+            while (guesses != maxGuesses && selectedWord != guessedWord)
+            {
+                Console.WriteLine($"Word: {guessedWord}");
+                Console.WriteLine($"Guessed Letters: {string.Join(',', getGuessedLetters(guessedLetters))}");
+                Console.WriteLine($"Wrong guesses: {guesses} out of {maxGuesses}");
+
+                // IN LOOP
+
+                char guess = getOneLetter(guessedLetters);
+                if (guess == ' ')
+                {
+                    Console.WriteLine("Enter a letter!");
+                    continue;
+                }
+                // If we already guessed, re-ask
+                else if (guessedLetters[guess] == true)
+                {
+                    Console.WriteLine("You already entered this letter. Enter a new letter!");
+                    continue;
+                }
+                // If we guess and its right, continue
+                else if (selectedWordLower.Contains(guess))
+                {
+                    Console.WriteLine("Correct!");
+                    guessedLetters[guess] = true;
+                }
+                // If we guess and its wrong, increment guesses
+                else
+                {
+                    Console.WriteLine("Wrong!");
+                    guesses++;
+                    guessedLetters[guess] = true;
+                }
+                guessedWord = getCurrentWord(guessedLetters, selectedWord);
+            }
+            if (selectedWord == guessedWord)
+            {
+                Console.WriteLine($"Congratulations! The Word is {selectedWord}!");
+            }
+            else
+            {
+                Console.WriteLine($"Oh no, better luck next time. The Word was {selectedWord}!");
+            }
         }
+
+        public static List<char> getGuessedLetters(Dictionary<char, bool> guessedLetters)
+        {
+            List<char> letters = new List<char>();
+            foreach (char c in "qwertyuiopasdfghjklzxcvbnm")
+            {
+                if (guessedLetters[c])
+                {
+                    letters.Add(c);
+                }
+            }
+            // Console.WriteLine($"Guessed Letters: {string.Join(',', letters)}");
+            return letters;
+        }
+
+        public static char getOneLetter(Dictionary<char, bool> guessedLetters)
+        {
+            string inputLine = Console.ReadLine();
+            if (inputLine.Length != 1) return ' ';
+            char c = inputLine[0];
+            c = char.ToLower(c);
+            if (!guessedLetters.ContainsKey(c)) return ' ';
+            return c;
+        }
+
+        public static string getCurrentWord(Dictionary<char, bool> guessedLetters, string selectedWord)
+        {
+            string currentGuess = "";
+            foreach (char c in selectedWord)
+            {
+
+                if (guessedLetters[char.ToLower(c)])
+                {
+                    currentGuess += c;
+                }
+                else
+                {
+                    currentGuess += "_";
+                }
+            }
+            return currentGuess;
+        }
+
     }
 }
