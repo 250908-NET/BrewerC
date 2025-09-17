@@ -4,3 +4,5 @@ git init
 git remote add origin https://github.com/250908-NET/TheATeam
 git pull origin main
 git checkout main
+
+touch 
