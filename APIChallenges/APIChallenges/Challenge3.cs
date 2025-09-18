@@ -36,7 +36,7 @@ public class Challenge3
         return Results.Content($"{{\"isPrime\": {isPrime} }}", "application/json", statusCode: 200);
     }
 
-    public static IResults fibonacci(int count)
+    public static IResult fibonacci(int count)
     {
         if (count < 1) return Results.BadRequest("Provide a valid number");
         if (count == 1) return Results.Ok("0");

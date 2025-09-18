@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 // CHALLENGE 3: Christian
 var numberGroup = app.MapGroup("/number");
 numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
-numberGroup.MapGet("/prime/{number}", (int number) => Challenge3.prime(number));
+numberGroup.MapGet("/prime/{number}", (int number) => Challenge3.isPrime(number));
 numberGroup.MapGet("/fibonacci/{count}", (int count) => Challenge3.fibonacci(count));
 numberGroup.MapGet("/factor/{number}", (int number) => Challenge3.factor(number));
 
@@ -41,8 +41,11 @@ numberGroup.MapGet("/factor/{number}", (int number) => Challenge3.factor(number)
 
 
 // CHALLENGE 7: Christian
-
-
+var passwordGroup = app.MapGroup("/password");
+passwordGroup.MapGet("/simple/{length}", (int length) => Challenge7.Simple(length));
+passwordGroup.MapGet("/complex/{length}", (int length) => Challenge7.Complex(length));
+passwordGroup.MapGet("/memorable/{count}", (int count) => Challenge7.Memorable(count));
+passwordGroup.MapGet("/strength/{password}", (string password) => Challenge7.Strength(password));
 
 // CHALLENGE 8: Satar
 
