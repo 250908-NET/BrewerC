@@ -1,7 +1,21 @@
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<WeatherService>();
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+builder.Host.UseSerilog();
 builder.Services.AddSingleton<CalculatorService>();
 builder.Services.AddSingleton<ColorsService>();
 var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // app.MapGet("/", () => "Hello World!");
 
@@ -35,7 +49,6 @@ app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService 
 
 
 // CHALLENGE 3: Christian
-
 
 // CHALLENGE 4: Satar
 
@@ -74,7 +87,23 @@ app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
 
 
 // CHALLENGE 10:
-
+// TODO: List of forecasts - list of strings
+// TODO: POST /weather/saveForecast - save a forecast
+// TODO: GET /weather/ - whole list
+// TODO: DELETE /weather/removeForecast/{index} - remove forecast by index
+var weatherGroup = app.MapGroup("/weather");
+weatherGroup.MapPost("/saveForecast", (WeatherService weatherService, Weather weather) =>
+{
+    return Results.Ok(weatherService.SaveForecast(weather.forecast));
+});
+weatherGroup.MapGet("/", (WeatherService service) =>
+{
+    return Results.Ok(service.getAllForecasts());
+});
+weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService, int index) =>
+{
+    return Results.Ok(weatherService.deleteForecast(index));
+});
 
 // CHALLENGE 11:
 
