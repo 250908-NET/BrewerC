@@ -27,9 +27,9 @@ if (app.Environment.IsDevelopment())
 // CHALLENGE 3: Christian
 var numberGroup = app.MapGroup("/number");
 numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
-numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
-// numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
-// numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+numberGroup.MapGet("/prime/{number}", (int number) => Challenge3.prime(number));
+numberGroup.MapGet("/fibonacci/{count}", (int count) => Challenge3.fibonacci(count));
+numberGroup.MapGet("/factor/{number}", (int number) => Challenge3.factor(number));
 
 // CHALLENGE 4: Satar
 
@@ -41,6 +41,7 @@ numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count
 
 
 // CHALLENGE 7: Christian
+
 
 
 // CHALLENGE 8: Satar
