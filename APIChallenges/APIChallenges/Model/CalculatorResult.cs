@@ -1,0 +1,1 @@
+public record CalculatorResult(string operation, double Input1, double Input2, double Result);

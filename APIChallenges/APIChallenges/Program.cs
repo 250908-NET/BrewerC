@@ -7,6 +7,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
+builder.Services.AddSingleton<CalculatorService>();
+builder.Services.AddSingleton<ColorsService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -20,6 +22,28 @@ if (app.Environment.IsDevelopment())
 // git checkout -b api-challenges-{yourName}
 // CHALLENGE 1: Nizer
 
+app.MapGet("/", () => {
+    return Results.Ok("Hello World");
+});
+
+app.MapGet("/calculator/add/{a}/{b}", (double a, double b, CalculatorService service) => {
+    return Results.Ok(service.Add(a, b));
+});
+
+app.MapGet("/calculator/subtract/{a}/{b}", (double a, double b, CalculatorService service) =>
+{
+    return Results.Ok(service.Subtract(a, b));
+});
+
+app.MapGet("/calculator/multiply/{a}/{b}", (double a, double b, CalculatorService service) =>
+{
+    return Results.Ok(service.Multiply(a, b));
+});
+
+app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService service) =>
+{
+    return service.Divide(a, b); 
+});
 
 // CHALLENGE 2: Victor
 
@@ -30,8 +54,26 @@ if (app.Environment.IsDevelopment())
 
 
 // CHALLENGE 5: Nizer
+app.MapGet("/colors", (ColorsService service) =>
+{
+return Results.Ok(service.getColors());
+});
 
+app.MapGet("/colors/random", (ColorsService service) =>
+{
+    return Results.Ok(service.getRandomColor());
+});
 
+app.MapGet("/colors/search/{letter}", (string letter, ColorsService service) =>
+{
+    return Results.Ok(service.searchColor(letter));
+});
+
+app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
+{
+    service.addColor(color);
+    return Results.Ok($"{color} added Successfully");
+});
 // CHALLENGE 6: Victor
 
 
