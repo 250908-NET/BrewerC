@@ -25,6 +25,11 @@ if (app.Environment.IsDevelopment())
 
 
 // CHALLENGE 3: Christian
+var numberGroup = app.MapGroup("/number");
+numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+// numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+// numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
 
 // CHALLENGE 4: Satar
 
