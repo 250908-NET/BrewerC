@@ -3,6 +3,7 @@ var app = builder.Build();
 
 // app.MapGet("/", () => "Hello World!");
 
+// git checkout -b api-challenges-{yourName}
 // CHALLENGE 1: Nizer
 
 
