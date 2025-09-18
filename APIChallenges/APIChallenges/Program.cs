@@ -73,6 +73,20 @@ weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService
 });
 
 // CHALLENGE 11:
+var gameGroup = app.MapGroup("/game");
+gameGroup.MapGet("/guess-number/{number}", (int number) => {
+    Challenge11.GuessNumber(number);
+});
+gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
+{
+    return Challenge11.RockPaperScissors(choice);
+});
+gameGroup.MapGet("/dice?sides={sides}&count={count}", (int sides, int count) => {
+    return Challenge11.RollDice(sides, count);
+});
+gameGroup.MapGet("/coin-flip/{count}", (int count) => {
+    return Challenge11.CoinFlip(count);
+});
 
 
 
