@@ -4,13 +4,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<WeatherService>();
 builder.Services.AddSingleton<StringService>();
 builder.Services.AddSingleton<TemperatureService>();
+builder.Services.AddSingleton<CalculatorService>();
+builder.Services.AddSingleton<ColorsService>();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
-builder.Services.AddSingleton<CalculatorService>();
-builder.Services.AddSingleton<ColorsService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -143,23 +143,26 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}",
 
 // CHALLENGE 10:
 // TODO: List of forecasts - list of strings
-// TODO: POST /weather/saveForecast - save a forecast
-// TODO: GET /weather/ - whole list
 // TODO: DELETE /weather/removeForecast/{index} - remove forecast by index
-var weatherGroup = app.MapGroup("/weather");
-weatherGroup.MapPost("/saveForecast", (WeatherService weatherService, Weather weather) =>
+app.MapGet("/weather", (WeatherService weatherService) =>
 {
-    return Results.Ok(weatherService.SaveForecast(weather.forecast));
-});
-weatherGroup.MapGet("/", (WeatherService service) =>
-{
-    return Results.Ok(service.getAllForecasts());
-});
-weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService, int index) =>
-{
-    return Results.Ok(weatherService.deleteForecast(index));
+    return Results.Ok(weatherService.GetAllForecasts());
 });
 
+// TODO: POST /weather/saveForecast - save a forecast
+app.MapPost("/weather", (WeatherService weatherService, Weather forecast) =>
+{
+    if (string.IsNullOrWhiteSpace(forecast.Forecast))
+        return Results.BadRequest("Forecast text cannot be empty");
+
+    weatherService.SaveForecast(forecast);
+    return Results.Created($"/weather/{forecast.Date}", forecast);
+});
+app.MapDelete("/weather/{date}", (WeatherService weatherService, DateTime date) =>
+{
+    var deleted = weatherService.DeleteForecast(date);
+    return deleted ? Results.NoContent() : Results.NotFound($"No forecast found for {date:yyyy-MM-dd}");
+});
 // CHALLENGE 11:
 
 
