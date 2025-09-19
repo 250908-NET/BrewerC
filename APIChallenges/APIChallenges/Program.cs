@@ -9,6 +9,7 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
 builder.Services.AddSingleton<CalculatorService>();
 builder.Services.AddSingleton<ColorsService>();
+builder.Services.AddSingleton<UnitConverterService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -92,7 +93,25 @@ passwordGroup.MapGet("/strength/{password}", (string password) => Challenge7.Str
 // CHALLENGE 8: Satar
 
 
-// CHALLENGE 9:
+// CHALLENGE 9: Nizar
+app.MapGroup("/convert");
+app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertLength(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
+
+app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertWeight(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
+
+app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertVolume(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
 
 
 // CHALLENGE 10:

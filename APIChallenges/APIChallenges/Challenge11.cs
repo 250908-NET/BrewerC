@@ -8,7 +8,7 @@ public class Challenge11
     {
         return Results.Ok("Hello");
     }
-    public static IResult dice(int sides, int count)
+    public static IResult RollDice(int sides, int count)
     {
         return Results.Ok("Hello");
     }
