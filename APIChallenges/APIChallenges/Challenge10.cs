@@ -3,7 +3,6 @@ public class Weather
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public string Forecast { get; set; }
 }
-GCNotificationStatus
 public class WeatherService
 {
     private readonly List<Weather> forecasts = new();
