@@ -8,7 +8,8 @@ builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
+if (true)
 {
     app.MapOpenApi();
     app.UseSwagger();
@@ -74,14 +75,14 @@ weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService
 
 // CHALLENGE 11:
 var gameGroup = app.MapGroup("/game");
-gameGroup.MapGet("/guess-number/{number}", (int number) => {
-    Challenge11.GuessNumber(number);
+gameGroup.MapGet("/guess-number", (int number, string name) => {
+    return Challenge11.GuessNumber(number, name);
 });
 gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
 {
     return Challenge11.RockPaperScissors(choice);
 });
-gameGroup.MapGet("/dice?sides={sides}&count={count}", (int sides, int count) => {
+gameGroup.MapGet("/dice", (int sides, int count) => {
     return Challenge11.RollDice(sides, count);
 });
 gameGroup.MapGet("/coin-flip/{count}", (int count) => {
