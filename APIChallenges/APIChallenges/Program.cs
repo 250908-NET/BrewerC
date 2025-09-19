@@ -2,6 +2,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<WeatherService>();
+builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -11,7 +12,8 @@ builder.Services.AddSingleton<CalculatorService>();
 builder.Services.AddSingleton<ColorsService>();
 builder.Services.AddSingleton<UnitConverterService>();
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
+if (true)
 {
     app.MapOpenApi();
     app.UseSwagger();
@@ -135,14 +137,14 @@ weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService
 
 // CHALLENGE 11:
 var gameGroup = app.MapGroup("/game");
-gameGroup.MapGet("/guess-number/{number}", (int number) => {
-    Challenge11.GuessNumber(number);
+gameGroup.MapGet("/guess-number", (int number, string name) => {
+    return Challenge11.GuessNumber(number, name);
 });
 gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
 {
     return Challenge11.RockPaperScissors(choice);
 });
-gameGroup.MapGet("/dice?sides={sides}&count={count}", (int sides, int count) => {
+gameGroup.MapGet("/dice/{sides}/{count}", (int sides, int count) => {
     return Challenge11.RollDice(sides, count);
 });
 gameGroup.MapGet("/coin-flip/{count}", (int count) => {
@@ -150,5 +152,20 @@ gameGroup.MapGet("/coin-flip/{count}", (int count) => {
 });
 
 
+// BAX GUESS GAME
+// To pass parameters into the service, use AddSingleton with a factory lambda:
+// var baxGameGroup = app.MapGroup("/bax-guess-game");
+// baxGameGroup.MapGet("/getGameInfo", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetGameInfo();
+// });
+// baxGameGroup.MapGet("/getGameEvents", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetEvents();
+// });
+// baxGameGroup.MapGet("/guessNumber", (GuessGameService guessGameService, int number, string name) =>
+// {
+//     return guessGameService.GuessNumber(number, name);
+// });
 
-app.Run();
+// app.Run();
