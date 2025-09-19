@@ -93,10 +93,18 @@ gameGroup.MapGet("/coin-flip/{count}", (int count) => {
 
 // BAX GUESS GAME
 // To pass parameters into the service, use AddSingleton with a factory lambda:
-var baxGameGroup = app.MapGroup("/bax-guess-game");
-baxGameGroup.MapGet("/getGameInfo", (GuessGameService guessGameService) =>
-{
-    return guessGameService.GetGameInfo();
-});
+// var baxGameGroup = app.MapGroup("/bax-guess-game");
+// baxGameGroup.MapGet("/getGameInfo", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetGameInfo();
+// });
+// baxGameGroup.MapGet("/getGameEvents", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetEvents();
+// });
+// baxGameGroup.MapGet("/guessNumber", (GuessGameService guessGameService, int number, string name) =>
+// {
+//     return guessGameService.GuessNumber(number, name);
+// });
 
-app.Run();
+// app.Run();
