@@ -1,37 +1,36 @@
 public class Weather
 {
-    public string forecast { get; set; }
+    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public string Forecast { get; set; }
 }
-
+GCNotificationStatus
 public class WeatherService
 {
-    List<string> forecasts = new List<string>();
+    private readonly List<Weather> forecasts = new();
 
-    public WeatherService() { }
+    public List<Weather> GetAllForecasts() => forecasts;
 
-    public List<string> getAllForecasts()
+    public void SaveForecast(Weather forecast)
     {
-        printForecasts();
-        return this.forecasts;
+        forecasts.Add(forecast);
+        PrintForecasts();
     }
 
-    public bool SaveForecast(string forecast)
+    public bool DeleteForecast(DateTime date)
     {
-        this.forecasts.Add(forecast);
-        printForecasts();
+        var forecast = forecasts.FirstOrDefault(f => f.Date.Date == date.Date);
+        if (forecast == null) return false;
+
+        forecasts.Remove(forecast);
+        PrintForecasts();
         return true;
     }
 
-    public bool deleteForecast(int forecastIndex)
+    private void PrintForecasts()
     {
-        if (forecastIndex < 0 || forecastIndex >= forecasts.Count()) return false;
-        forecasts.RemoveAt(forecastIndex);
-        printForecasts();
-        return true;
-    }
-
-    private void printForecasts()
-    {
-        foreach (string forecast in forecasts) Console.WriteLine(forecast);
+        foreach (var f in forecasts)
+        {
+            Console.WriteLine($"{f.Date:yyyy-MM-dd}: {f.Forecast}");
+        }
     }
 }

@@ -2,15 +2,16 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<WeatherService>();
+builder.Services.AddSingleton<StringService>();
+builder.Services.AddSingleton<TemperatureService>();
+builder.Services.AddSingleton<CalculatorService>();
+builder.Services.AddSingleton<ColorsService>();
 builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
-builder.Services.AddSingleton<CalculatorService>();
-builder.Services.AddSingleton<ColorsService>();
-builder.Services.AddSingleton<UnitConverterService>();
 var app = builder.Build();
 // if (app.Environment.IsDevelopment())
 if (true)
@@ -50,6 +51,35 @@ app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService 
 
 // CHALLENGE 2: Victor
 
+// Reverse text
+app.MapGet("/text/reverse/{text}", (string text, StringService stringService) =>
+{
+    return stringService.ReverseText(text);
+});
+
+// Uppercase text
+app.MapGet("/text/uppercase/{text}", (string text, StringService stringService) =>
+{
+    return stringService.UppercaseText(text);
+});
+
+// Lowercase text
+app.MapGet("/text/lowercase/{text}", (string text, StringService stringService) =>
+{
+    return stringService.LowercaseText(text);
+});
+
+// Count characters, words, vowels
+app.MapGet("/text/count/{text}", (string text, StringService stringService) =>
+{
+    return stringService.CountText(text);
+});
+
+// Check palindrome
+app.MapGet("/text/palindrome/{text}", (string text, StringService stringService) =>
+{
+    return stringService.CheckPalindrome(text);
+});
 
 // CHALLENGE 3: Christian
 var numberGroup = app.MapGroup("/number");
@@ -83,7 +113,31 @@ app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
     return Results.Ok($"{color} added Successfully");
 });
 // CHALLENGE 6: Victor
+app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.CelsiusToFahrenheit(temp);
+});
 
+app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.FahrenheitToCelsius(temp);
+});
+
+app.MapGet("/temp/kelvin-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.KelvinToCelsius(temp);
+});
+
+app.MapGet("/temp/celsius-to-kelvin/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.CelsiusToKelvin(temp);
+});
+
+app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", 
+    (double temp1, string unit1, double temp2, string unit2, TemperatureService temperatureService) =>
+{
+    return temperatureService.CompareTemperatures(temp1, unit1, temp2, unit2);
+});
 
 // CHALLENGE 7: Christian
 var passwordGroup = app.MapGroup("/password");
@@ -118,23 +172,26 @@ app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string 
 
 // CHALLENGE 10:
 // TODO: List of forecasts - list of strings
-// TODO: POST /weather/saveForecast - save a forecast
-// TODO: GET /weather/ - whole list
 // TODO: DELETE /weather/removeForecast/{index} - remove forecast by index
-var weatherGroup = app.MapGroup("/weather");
-weatherGroup.MapPost("/saveForecast", (WeatherService weatherService, Weather weather) =>
+app.MapGet("/weather", (WeatherService weatherService) =>
 {
-    return Results.Ok(weatherService.SaveForecast(weather.forecast));
-});
-weatherGroup.MapGet("/", (WeatherService service) =>
-{
-    return Results.Ok(service.getAllForecasts());
-});
-weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService, int index) =>
-{
-    return Results.Ok(weatherService.deleteForecast(index));
+    return Results.Ok(weatherService.GetAllForecasts());
 });
 
+// TODO: POST /weather/saveForecast - save a forecast
+app.MapPost("/weather", (WeatherService weatherService, Weather forecast) =>
+{
+    if (string.IsNullOrWhiteSpace(forecast.Forecast))
+        return Results.BadRequest("Forecast text cannot be empty");
+
+    weatherService.SaveForecast(forecast);
+    return Results.Created($"/weather/{forecast.Date}", forecast);
+});
+app.MapDelete("/weather/{date}", (WeatherService weatherService, DateTime date) =>
+{
+    var deleted = weatherService.DeleteForecast(date);
+    return deleted ? Results.NoContent() : Results.NotFound($"No forecast found for {date:yyyy-MM-dd}");
+});
 // CHALLENGE 11:
 var gameGroup = app.MapGroup("/game");
 gameGroup.MapGet("/guess-number", (int number, string name) => {
