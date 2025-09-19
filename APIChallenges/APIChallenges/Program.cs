@@ -50,6 +50,11 @@ app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService 
 
 
 // CHALLENGE 3: Christian
+var numberGroup = app.MapGroup("/number");
+numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+numberGroup.MapGet("/prime/{number}", (int number) => Challenge3.isPrime(number));
+numberGroup.MapGet("/fibonacci/{count}", (int count) => Challenge3.fibonacci(count));
+numberGroup.MapGet("/factor/{number}", (int number) => Challenge3.factor(number));
 
 // CHALLENGE 4: Satar
 
@@ -79,7 +84,11 @@ app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
 
 
 // CHALLENGE 7: Christian
-
+var passwordGroup = app.MapGroup("/password");
+passwordGroup.MapGet("/simple/{length}", (int length) => Challenge7.Simple(length));
+passwordGroup.MapGet("/complex/{length}", (int length) => Challenge7.Complex(length));
+passwordGroup.MapGet("/memorable/{count}", (int count) => Challenge7.Memorable(count));
+passwordGroup.MapGet("/strength/{password}", (string password) => Challenge7.Strength(password));
 
 // CHALLENGE 8: Satar
 
@@ -125,6 +134,20 @@ weatherGroup.MapDelete("/removeForecast/{index}", (WeatherService weatherService
 });
 
 // CHALLENGE 11:
+var gameGroup = app.MapGroup("/game");
+gameGroup.MapGet("/guess-number/{number}", (int number) => {
+    Challenge11.GuessNumber(number);
+});
+gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
+{
+    return Challenge11.RockPaperScissors(choice);
+});
+gameGroup.MapGet("/dice?sides={sides}&count={count}", (int sides, int count) => {
+    return Challenge11.RollDice(sides, count);
+});
+gameGroup.MapGet("/coin-flip/{count}", (int count) => {
+    return Challenge11.CoinFlip(count);
+});
 
 
 
