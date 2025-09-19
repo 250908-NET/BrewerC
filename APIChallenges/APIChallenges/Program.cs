@@ -6,13 +6,15 @@ builder.Services.AddSingleton<StringService>();
 builder.Services.AddSingleton<TemperatureService>();
 builder.Services.AddSingleton<CalculatorService>();
 builder.Services.AddSingleton<ColorsService>();
+builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
+if (true)
 {
     app.MapOpenApi();
     app.UseSwagger();
@@ -80,6 +82,11 @@ app.MapGet("/text/palindrome/{text}", (string text, StringService stringService)
 });
 
 // CHALLENGE 3: Christian
+var numberGroup = app.MapGroup("/number");
+numberGroup.MapGet("/fizzbuzz/{count}", (int count) => Challenge3.fizzbuzz(count));
+numberGroup.MapGet("/prime/{number}", (int number) => Challenge3.isPrime(number));
+numberGroup.MapGet("/fibonacci/{count}", (int count) => Challenge3.fibonacci(count));
+numberGroup.MapGet("/factor/{number}", (int number) => Challenge3.factor(number));
 
 // CHALLENGE 4: Satar
 
@@ -133,12 +140,34 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}",
 });
 
 // CHALLENGE 7: Christian
-
+var passwordGroup = app.MapGroup("/password");
+passwordGroup.MapGet("/simple/{length}", (int length) => Challenge7.Simple(length));
+passwordGroup.MapGet("/complex/{length}", (int length) => Challenge7.Complex(length));
+passwordGroup.MapGet("/memorable/{count}", (int count) => Challenge7.Memorable(count));
+passwordGroup.MapGet("/strength/{password}", (string password) => Challenge7.Strength(password));
 
 // CHALLENGE 8: Satar
 
 
-// CHALLENGE 9:
+// CHALLENGE 9: Nizar
+app.MapGroup("/convert");
+app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertLength(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
+
+app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertWeight(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
+
+app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+{
+    var result = service.convertVolume(value, fromUnit, toUnit);
+    return Results.Ok(new { value, fromUnit, toUnit, result });
+});
 
 
 // CHALLENGE 10:
@@ -164,7 +193,36 @@ app.MapDelete("/weather/{date}", (WeatherService weatherService, DateTime date) 
     return deleted ? Results.NoContent() : Results.NotFound($"No forecast found for {date:yyyy-MM-dd}");
 });
 // CHALLENGE 11:
+var gameGroup = app.MapGroup("/game");
+gameGroup.MapGet("/guess-number", (int number, string name) => {
+    return Challenge11.GuessNumber(number, name);
+});
+gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
+{
+    return Challenge11.RockPaperScissors(choice);
+});
+gameGroup.MapGet("/dice/{sides}/{count}", (int sides, int count) => {
+    return Challenge11.RollDice(sides, count);
+});
+gameGroup.MapGet("/coin-flip/{count}", (int count) => {
+    return Challenge11.CoinFlip(count);
+});
 
 
+// BAX GUESS GAME
+// To pass parameters into the service, use AddSingleton with a factory lambda:
+// var baxGameGroup = app.MapGroup("/bax-guess-game");
+// baxGameGroup.MapGet("/getGameInfo", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetGameInfo();
+// });
+// baxGameGroup.MapGet("/getGameEvents", (GuessGameService guessGameService) =>
+// {
+//     return guessGameService.GetEvents();
+// });
+// baxGameGroup.MapGet("/guessNumber", (GuessGameService guessGameService, int number, string name) =>
+// {
+//     return guessGameService.GuessNumber(number, name);
+// });
 
-app.Run();
+// app.Run();

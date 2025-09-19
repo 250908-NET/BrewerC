@@ -1,0 +1,22 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: revpro-week1-api
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"    # minimum instances
+        autoscaling.knative.dev/maxScale: "1"    # maximum instances
+    spec:
+      timeoutSeconds: 150
+      containerConcurrency: 80                  # matches your previous concurrency setting
+      containers:
+        - image: us-east1-docker.pkg.dev/baxendev-cloudservice/christian-revpro/week1-api:latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+          env:
+            - name: DEBUG
+              value: "false"
