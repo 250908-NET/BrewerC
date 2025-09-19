@@ -1,95 +1,187 @@
-public class Challenge2
+public class StringService
 {
-    public static IResult Reverse(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return Results.BadRequest(new { error = "Text cannot be empty" });
+    private readonly ILogger<StringService> _logger;
 
-        var result = new string(text.Reverse().ToArray());
-        return Results.Ok(new { operation = "reverse", original = text, result = result });
+    public StringService(ILogger<StringService> logger)
+    {
+        _logger = logger;
     }
 
-    public static IResult Uppercase(string text)
+    public IResult ReverseText(string text)
     {
-        if (string.IsNullOrEmpty(text))
-            return Results.BadRequest(new { error = "Text cannot be empty" });
+        try
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return Results.BadRequest("Text cannot be empty");
+            }
 
-        var result = text.ToUpper();
-        return Results.Ok(new { operation = "uppercase", original = text, result = result });
+            var reversed = new string(text.Reverse().ToArray());
+            
+            _logger.LogInformation("Text reversed: '{Original}' -> '{Reversed}'", text, reversed);
+
+            return Results.Ok(new TextResponse
+            {
+                Original = text,
+                Result = reversed,
+                Operation = "reverse"
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reversing text");
+            return Results.BadRequest("Error processing text");
+        }
     }
 
-    public static IResult Lowercase(string text)
+    public IResult UppercaseText(string text)
     {
-        if (string.IsNullOrEmpty(text))
-            return Results.BadRequest(new { error = "Text cannot be empty" });
+        try
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return Results.BadRequest("Text cannot be empty");
+            }
 
-        var result = text.ToLower();
-        return Results.Ok(new { operation = "lowercase", original = text, result = result });
+            var uppercase = text.ToUpper();
+            
+            _logger.LogInformation("Text uppercased: '{Original}' -> '{Result}'", text, uppercase);
+
+            return Results.Ok(new TextResponse
+            {
+                Original = text,
+                Result = uppercase,
+                Operation = "uppercase"
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error converting text to uppercase");
+            return Results.BadRequest("Error processing text");
+        }
     }
 
-    public static IResult Count(string text)
+    public IResult LowercaseText(string text)
     {
-        if (string.IsNullOrEmpty(text))
-            return Results.BadRequest(new { error = "Text cannot be empty" });
+        try
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return Results.BadRequest("Text cannot be empty");
+            }
 
-        var characterCount = text.Length;
-        var wordCount = CountWords(text);
-        var vowelCount = CountVowels(text);
+            var lowercase = text.ToLower();
+            
+            _logger.LogInformation("Text lowercased: '{Original}' -> '{Result}'", text, lowercase);
 
-        return Results.Ok(new 
-        { 
-            operation = "count", 
-            text = text,
-            characterCount = characterCount,
-            wordCount = wordCount,
-            vowelCount = vowelCount
-        });
+            return Results.Ok(new TextResponse
+            {
+                Original = text,
+                Result = lowercase,
+                Operation = "lowercase"
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error converting text to lowercase");
+            return Results.BadRequest("Error processing text");
+        }
     }
 
-    public static IResult Palindrome(string text)
+    public IResult CountText(string text)
     {
-        if (string.IsNullOrEmpty(text))
-            return Results.BadRequest(new { error = "Text cannot be empty" });
+        try
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return Results.BadRequest("Text cannot be empty");
+            }
 
-        var isPalindrome = IsPalindrome(text);
-        return Results.Ok(new 
-        { 
-            operation = "palindrome", 
-            text = text,
-            isPalindrome = isPalindrome
-        });
+            var characterCount = text.Length;
+            var wordCount = text.Split(new char[] { ' ', '\t', '\n', '\r' }, 
+                StringSplitOptions.RemoveEmptyEntries).Length;
+            
+            var vowels = "aeiouAEIOU";
+            var vowelCount = text.Count(c => vowels.Contains(c));
+
+            var response = new TextCountResponse
+            {
+                Original = text,
+                CharacterCount = characterCount,
+                WordCount = wordCount,
+                VowelCount = vowelCount
+            };
+
+            _logger.LogInformation("Text counted: '{Text}' - {Characters} chars, {Words} words, {Vowels} vowels", 
+                text, characterCount, wordCount, vowelCount);
+
+            return Results.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error counting text");
+            return Results.BadRequest("Error processing text");
+        }
     }
 
-    // Helper methods
-    private static int CountWords(string text)
+    public IResult CheckPalindrome(string text)
     {
-        if (string.IsNullOrWhiteSpace(text))
-            return 0;
+        try
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return Results.BadRequest("Text cannot be empty");
+            }
 
-        var words = text.Split(new char[] { ' ', '\t', '\n', '\r' }, 
-                              StringSplitOptions.RemoveEmptyEntries);
-        return words.Length;
+            // Clean text for palindrome check (remove spaces, punctuation, make lowercase)
+            var cleanText = new string(text.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+            
+            var reversed = new string(cleanText.Reverse().ToArray());
+            var isPalindrome = cleanText == reversed;
+
+            var response = new PalindromeResponse
+            {
+                Original = text,
+                CleanedText = cleanText,
+                IsPalindrome = isPalindrome,
+                Message = isPalindrome 
+                    ? "Yes, this is a palindrome!" 
+                    : "No, this is not a palindrome."
+            };
+
+            _logger.LogInformation("Palindrome check: '{Original}' -> '{Cleaned}' -> {Result}", 
+                text, cleanText, isPalindrome ? "IS palindrome" : "NOT palindrome");
+
+            return Results.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking palindrome");
+            return Results.BadRequest("Error processing text");
+        }
     }
+}
 
-    private static int CountVowels(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return 0;
+// Response Models
+public record TextResponse
+{
+    public string Original { get; init; } = "";
+    public string Result { get; init; } = "";
+    public string Operation { get; init; } = "";
+}
 
-        var vowels = "aeiouAEIOU";
-        return text.Count(c => vowels.Contains(c));
-    }
+public record TextCountResponse
+{
+    public string Original { get; init; } = "";
+    public int CharacterCount { get; init; }
+    public int WordCount { get; init; }
+    public int VowelCount { get; init; }
+}
 
-    private static bool IsPalindrome(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return false;
-
-        // Remove spaces and punctuation, convert to lowercase
-        var cleanText = new string(text.ToLower().Where(c => char.IsLetterOrDigit(c)).ToArray());
-        
-        // Compare with its reverse
-        var reversed = new string(cleanText.Reverse().ToArray());
-        return cleanText == reversed;
-    }
+public record PalindromeResponse
+{
+    public string Original { get; init; } = "";
+    public string CleanedText { get; init; } = "";
+    public bool IsPalindrome { get; init; }
+    public string Message { get; init; } = "";
 }

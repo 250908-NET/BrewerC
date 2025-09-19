@@ -2,6 +2,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<WeatherService>();
+builder.Services.AddSingleton<StringService>();
+builder.Services.AddSingleton<TemperatureService>();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,6 +49,35 @@ app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService 
 
 // CHALLENGE 2: Victor
 
+// Reverse text
+app.MapGet("/text/reverse/{text}", (string text, StringService stringService) =>
+{
+    return stringService.ReverseText(text);
+});
+
+// Uppercase text
+app.MapGet("/text/uppercase/{text}", (string text, StringService stringService) =>
+{
+    return stringService.UppercaseText(text);
+});
+
+// Lowercase text
+app.MapGet("/text/lowercase/{text}", (string text, StringService stringService) =>
+{
+    return stringService.LowercaseText(text);
+});
+
+// Count characters, words, vowels
+app.MapGet("/text/count/{text}", (string text, StringService stringService) =>
+{
+    return stringService.CountText(text);
+});
+
+// Check palindrome
+app.MapGet("/text/palindrome/{text}", (string text, StringService stringService) =>
+{
+    return stringService.CheckPalindrome(text);
+});
 
 // CHALLENGE 3: Christian
 
@@ -75,7 +106,31 @@ app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
     return Results.Ok($"{color} added Successfully");
 });
 // CHALLENGE 6: Victor
+app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.CelsiusToFahrenheit(temp);
+});
 
+app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.FahrenheitToCelsius(temp);
+});
+
+app.MapGet("/temp/kelvin-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.KelvinToCelsius(temp);
+});
+
+app.MapGet("/temp/celsius-to-kelvin/{temp}", (double temp, TemperatureService temperatureService) =>
+{
+    return temperatureService.CelsiusToKelvin(temp);
+});
+
+app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", 
+    (double temp1, string unit1, double temp2, string unit2, TemperatureService temperatureService) =>
+{
+    return temperatureService.CompareTemperatures(temp1, unit1, temp2, unit2);
+});
 
 // CHALLENGE 7: Christian
 
