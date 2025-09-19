@@ -225,4 +225,4 @@ gameGroup.MapGet("/coin-flip/{count}", (int count) => {
 //     return guessGameService.GuessNumber(number, name);
 // });
 
-// app.Run();
+app.Run();
