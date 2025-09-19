@@ -2,6 +2,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<WeatherService>();
+builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -82,7 +83,7 @@ gameGroup.MapGet("/rock-paper-scissors/{choice}", (string choice) =>
 {
     return Challenge11.RockPaperScissors(choice);
 });
-gameGroup.MapGet("/dice", (int sides, int count) => {
+gameGroup.MapGet("/dice/{sides}/{count}", (int sides, int count) => {
     return Challenge11.RollDice(sides, count);
 });
 gameGroup.MapGet("/coin-flip/{count}", (int count) => {
@@ -90,5 +91,12 @@ gameGroup.MapGet("/coin-flip/{count}", (int count) => {
 });
 
 
+// BAX GUESS GAME
+// To pass parameters into the service, use AddSingleton with a factory lambda:
+var baxGameGroup = app.MapGroup("/bax-guess-game");
+baxGameGroup.MapGet("/getGameInfo", (GuessGameService guessGameService) =>
+{
+    return guessGameService.GetGameInfo();
+});
 
 app.Run();
