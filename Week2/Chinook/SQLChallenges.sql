@@ -12,6 +12,8 @@
 -- BASIC CHALLENGES
 -- List all customers (full name, customer id, and country) who are not in the USA
 
+select "FirstName", "LastName", "CustomerId", "Country" from "Customer" where "Country" <> 'USA';
+
 -- List all customers from Brazil
     
 -- List all sales agents

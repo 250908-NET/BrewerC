@@ -8,7 +8,7 @@
    License: http://www.codeplex.com/ChinookDatabase/license
 ********************************************************************************/
 CREATE DATABASE MyDatabase;
-GO
+
 
 USE MyDatabase;
 
@@ -22,7 +22,7 @@ CREATE TABLE [dbo].[Album]
     [ArtistId] INT NOT NULL,
     CONSTRAINT [PK_Album] PRIMARY KEY CLUSTERED ([AlbumId])
 );
-GO
+
 
 CREATE TABLE [dbo].[Artist]
 (
@@ -30,7 +30,7 @@ CREATE TABLE [dbo].[Artist]
     [Name] NVARCHAR(120),
     CONSTRAINT [PK_Artist] PRIMARY KEY CLUSTERED ([ArtistId])
 );
-GO
+
 CREATE TABLE [dbo].[Customer]
 (
     [CustomerId] INT NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE [dbo].[Customer]
     [SupportRepId] INT,
     CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([CustomerId])
 );
-GO
+
 CREATE TABLE [dbo].[Employee]
 (
     [EmployeeId] INT NOT NULL,
@@ -68,14 +68,14 @@ CREATE TABLE [dbo].[Employee]
     [Email] NVARCHAR(60),
     CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED ([EmployeeId])
 );
-GO
+
 CREATE TABLE [dbo].[Genre]
 (
     [GenreId] INT NOT NULL,
     [Name] NVARCHAR(120),
     CONSTRAINT [PK_Genre] PRIMARY KEY CLUSTERED ([GenreId])
 );
-GO
+
 CREATE TABLE [dbo].[Invoice]
 (
     [InvoiceId] INT NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE [dbo].[Invoice]
     [Total] NUMERIC(10,2) NOT NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceId])
 );
-GO
+
 CREATE TABLE [dbo].[InvoiceLine]
 (
     [InvoiceLineId] INT NOT NULL,
@@ -99,28 +99,28 @@ CREATE TABLE [dbo].[InvoiceLine]
     [Quantity] INT NOT NULL,
     CONSTRAINT [PK_InvoiceLine] PRIMARY KEY CLUSTERED ([InvoiceLineId])
 );
-GO
+
 CREATE TABLE [dbo].[MediaType]
 (
     [MediaTypeId] INT NOT NULL,
     [Name] NVARCHAR(120),
     CONSTRAINT [PK_MediaType] PRIMARY KEY CLUSTERED ([MediaTypeId])
 );
-GO
+
 CREATE TABLE [dbo].[Playlist]
 (
     [PlaylistId] INT NOT NULL,
     [Name] NVARCHAR(120),
     CONSTRAINT [PK_Playlist] PRIMARY KEY CLUSTERED ([PlaylistId])
 );
-GO
+
 CREATE TABLE [dbo].[PlaylistTrack]
 (
     [PlaylistId] INT NOT NULL,
     [TrackId] INT NOT NULL,
     CONSTRAINT [PK_PlaylistTrack] PRIMARY KEY NONCLUSTERED ([PlaylistId], [TrackId])
 );
-GO
+
 CREATE TABLE [dbo].[Track]
 (
     [TrackId] INT NOT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE [dbo].[Track]
     [UnitPrice] NUMERIC(10,2) NOT NULL,
     CONSTRAINT [PK_Track] PRIMARY KEY CLUSTERED ([TrackId])
 );
-GO
+
 
 
 /*******************************************************************************
@@ -146,57 +146,57 @@ GO
 ********************************************************************************/
 ALTER TABLE [dbo].[Album] ADD CONSTRAINT [FK_AlbumArtistId]
     FOREIGN KEY ([ArtistId]) REFERENCES [dbo].[Artist] ([ArtistId]) ON DELETE NO ACTION ON UPDATE NO ACTION; -- Referential Integrity / cascade 
-GO
+
 CREATE INDEX [IFK_AlbumArtistId] ON [dbo].[Album] ([ArtistId]);
-GO
+
 ALTER TABLE [dbo].[Customer] ADD CONSTRAINT [FK_CustomerSupportRepId]
     FOREIGN KEY ([SupportRepId]) REFERENCES [dbo].[Employee] ([EmployeeId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_CustomerSupportRepId] ON [dbo].[Customer] ([SupportRepId]);
-GO
+
 ALTER TABLE [dbo].[Employee] ADD CONSTRAINT [FK_EmployeeReportsTo]
     FOREIGN KEY ([ReportsTo]) REFERENCES [dbo].[Employee] ([EmployeeId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_EmployeeReportsTo] ON [dbo].[Employee] ([ReportsTo]);
-GO
+
 ALTER TABLE [dbo].[Invoice] ADD CONSTRAINT [FK_InvoiceCustomerId]
     FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customer] ([CustomerId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_InvoiceCustomerId] ON [dbo].[Invoice] ([CustomerId]);
-GO
+
 ALTER TABLE [dbo].[InvoiceLine] ADD CONSTRAINT [FK_InvoiceLineInvoiceId]
     FOREIGN KEY ([InvoiceId]) REFERENCES [dbo].[Invoice] ([InvoiceId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_InvoiceLineInvoiceId] ON [dbo].[InvoiceLine] ([InvoiceId]);
-GO
+
 ALTER TABLE [dbo].[InvoiceLine] ADD CONSTRAINT [FK_InvoiceLineTrackId]
     FOREIGN KEY ([TrackId]) REFERENCES [dbo].[Track] ([TrackId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_InvoiceLineTrackId] ON [dbo].[InvoiceLine] ([TrackId]);
-GO
+
 ALTER TABLE [dbo].[PlaylistTrack] ADD CONSTRAINT [FK_PlaylistTrackPlaylistId]
     FOREIGN KEY ([PlaylistId]) REFERENCES [dbo].[Playlist] ([PlaylistId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 ALTER TABLE [dbo].[PlaylistTrack] ADD CONSTRAINT [FK_PlaylistTrackTrackId]
     FOREIGN KEY ([TrackId]) REFERENCES [dbo].[Track] ([TrackId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_PlaylistTrackTrackId] ON [dbo].[PlaylistTrack] ([TrackId]);
-GO
+
 ALTER TABLE [dbo].[Track] ADD CONSTRAINT [FK_TrackAlbumId]
     FOREIGN KEY ([AlbumId]) REFERENCES [dbo].[Album] ([AlbumId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_TrackAlbumId] ON [dbo].[Track] ([AlbumId]);
-GO
+
 ALTER TABLE [dbo].[Track] ADD CONSTRAINT [FK_TrackGenreId]
     FOREIGN KEY ([GenreId]) REFERENCES [dbo].[Genre] ([GenreId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_TrackGenreId] ON [dbo].[Track] ([GenreId]);
-GO
+
 ALTER TABLE [dbo].[Track] ADD CONSTRAINT [FK_TrackMediaTypeId]
     FOREIGN KEY ([MediaTypeId]) REFERENCES [dbo].[MediaType] ([MediaTypeId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+
 CREATE INDEX [IFK_TrackMediaTypeId] ON [dbo].[Track] ([MediaTypeId]);
-GO
+
 
 /*******************************************************************************
    Populate Tables - DDL -> DML
@@ -705,7 +705,7 @@ INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (193, N'Blood 
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (194, N'By The Way', 127);
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (195, N'Californication', 127);
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (196, N'Retrospective I (1974-1980)', 128);
-INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (197, N'Santana - As Years Go By', 59);
+INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (197, N'Santana - As Years  By', 59);
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (198, N'Santana Live', 59);
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (199, N'Maquinarama', 130);
 INSERT INTO [dbo].[Album] ([AlbumId], [Title], [ArtistId]) VALUES (200, N'O Samba Poconé', 130);
@@ -871,7 +871,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (12, N'Breaking The Rules', 1, 1, 1, N'Angus Young, Malcolm Young, Brian Johnson', 263288, 8596840, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (13, N'Night Of The Long Knives', 1, 1, 1, N'Angus Young, Malcolm Young, Brian Johnson', 205688, 6706347, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (14, N'Spellbound', 1, 1, 1, N'Angus Young, Malcolm Young, Brian Johnson', 270863, 8817038, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (15, N'Go Down', 4, 1, 1, N'AC/DC', 331180, 10847611, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (15, N' Down', 4, 1, 1, N'AC/DC', 331180, 10847611, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (16, N'Dog Eat Dog', 4, 1, 1, N'AC/DC', 215196, 7032162, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (17, N'Let There Be Rock', 4, 1, 1, N'AC/DC', 366654, 12021261, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (18, N'Bad Boy Boogie', 4, 1, 1, N'AC/DC', 267728, 8776140, 0.99);
@@ -1290,7 +1290,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (431, N'The Invisible Man', 36, 1, 1, N'Queen', 238994, 7920353, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (432, N'Hammer To Fall', 36, 1, 1, N'Brian May', 220316, 7255404, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (433, N'Friends Will Be Friends', 36, 1, 1, N'Freddie Mercury & John Deacon', 248920, 8114582, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (434, N'The Show Must Go On', 36, 1, 1, N'Queen', 263784, 8526760, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (434, N'The Show Must  On', 36, 1, 1, N'Queen', 263784, 8526760, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (435, N'One Vision', 36, 1, 1, N'Queen', 242599, 7936928, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (436, N'Detroit Rock City', 37, 1, 1, N'Paul Stanley, B. Ezrin', 218880, 7146372, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (437, N'Black Diamond', 37, 1, 1, N'Paul Stanley', 314148, 10266007, 0.99);
@@ -1356,7 +1356,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (497, N'Midnight Blue', 40, 1, 1, N'David Coverdale/Earl Slick', 298631, 9750990, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (498, N'Too Many Tears', 40, 1, 1, N'Adrian Vanderberg/David Coverdale', 359497, 11810238, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (499, N'Don''t Lie To Me', 40, 1, 1, N'David Coverdale/Earl Slick', 283585, 9288007, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (500, N'Wherever You May Go', 40, 1, 1, N'David Coverdale', 239699, 7803074, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (500, N'Wherever You May ', 40, 1, 1, N'David Coverdale', 239699, 7803074, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (501, N'Grito De Alerta', 41, 1, 7, N'Gonzaga Jr.', 202213, 6539422, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (502, N'Não Dá Mais Pra Segurar (Explode Coração)', 41, 1, 7, 219768, 7083012, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (503, N'Começaria Tudo Outra Vez', 41, 1, 7, 196545, 6473395, 0.99);
@@ -2308,7 +2308,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1449, N'Destitute Illusions', 117, 1, 14, N'Derrick McKenzie/Jay Kay/Toby Smith', 340218, 11452651, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1450, N'Supersonic', 117, 1, 14, N'Jay Kay', 315872, 10699265, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1451, N'Butterfly', 117, 1, 14, N'Jay Kay/Toby Smith', 268852, 8947356, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1452, N'Were Do We Go From Here', 117, 1, 14, N'Jay Kay', 313626, 10504158, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1452, N'Were Do We  From Here', 117, 1, 14, N'Jay Kay', 313626, 10504158, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1453, N'King For A Day', 117, 1, 14, N'Jay Kay/Toby Smith', 221544, 7335693, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1454, N'Deeper Underground', 117, 1, 14, N'Toby Smith', 281808, 9351277, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1455, N'Just Another Story', 118, 1, 15, N'Toby Smith', 529684, 17582818, 0.99);
@@ -2558,7 +2558,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1699, N'Giz', 140, 1, 7, N'Dado Villa-Lobos/Marcelo Bonfá', 202213, 6677671, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1700, N'Dezesseis', 140, 1, 7, N'Dado Villa-Lobos/Marcelo Bonfá', 321724, 10501773, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1701, N'Antes Das Seis', 140, 1, 7, N'Dado Villa-Lobos', 189231, 6296531, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1702, N'Are You Gonna Go My Way', 141, 1, 1, N'Craig Ross/Lenny Kravitz', 211591, 6905135, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1702, N'Are You Gonna  My Way', 141, 1, 1, N'Craig Ross/Lenny Kravitz', 211591, 6905135, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1703, N'Fly Away', 141, 1, 1, N'Lenny Kravitz', 221962, 7322085, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1704, N'Rock And Roll Is Dead', 141, 1, 1, N'Lenny Kravitz', 204199, 6680312, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1705, N'Again', 141, 1, 1, N'Lenny Kravitz', 228989, 7490476, 0.99);
@@ -2835,7 +2835,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1976, N'Same Ol'' Situation', 162, 1, 3, N'Mick Mars/Nikki Sixx/Tommy Lee/Vince Neil', 254511, 8283958, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1977, N'Home Sweet Home', 162, 1, 3, N'Nikki Sixx/Tommy Lee/Vince Neil', 236904, 7697538, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1978, N'Afraid', 162, 1, 3, N'Nikki Sixx', 248006, 8077464, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1979, N'Don''t Go Away Mad (Just Go Away)', 162, 1, 3, N'Mick Mars/Nikki Sixx', 279980, 9188156, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1979, N'Don''t  Away Mad (Just  Away)', 162, 1, 3, N'Mick Mars/Nikki Sixx', 279980, 9188156, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1980, N'Without You', 162, 1, 3, N'Mick Mars/Nikki Sixx', 268956, 8738371, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1981, N'Smokin'' in The Boys Room', 162, 1, 3, N'Cub Coda/Michael Lutz', 206837, 6735408, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (1982, N'Primal Scream', 162, 1, 3, N'Mick Mars/Nikki Sixx/Tommy Lee/Vince Neil', 286197, 9421164, 0.99);
@@ -2994,7 +2994,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2135, N'Elvis Ate America', 176, 1, 10, N'Brian Eno, Bono, Adam Clayton, The Edge & Larry Mullen Jnr.', 180166, 5851053, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2136, N'Plot 180', 176, 1, 10, N'Brian Eno, Bono, Adam Clayton, The Edge & Larry Mullen Jnr.', 221596, 7253729, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2137, N'Theme From The Swan', 176, 1, 10, N'Brian Eno, Bono, Adam Clayton, The Edge & Larry Mullen Jnr.', 203911, 6638076, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2138, N'Theme From Let''s Go Native', 176, 1, 10, N'Brian Eno, Bono, Adam Clayton, The Edge & Larry Mullen Jnr.', 186723, 6179777, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2138, N'Theme From Let''s  Native', 176, 1, 10, N'Brian Eno, Bono, Adam Clayton, The Edge & Larry Mullen Jnr.', 186723, 6179777, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2139, N'Wrathchild', 177, 1, 1, N'Steve Harris', 170396, 5499390, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2140, N'Killers', 177, 1, 1, N'Paul Di''Anno/Steve Harris', 309995, 10009697, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2141, N'Prowler', 177, 1, 1, N'Steve Harris', 240274, 7782963, 0.99);
@@ -3012,7 +3012,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2153, N'Elderly Woman Behind The Counter In A Small Town', 178, 1, 1, N'Dave Abbruzzese & Jeff Ament & Stone Gossard & Mike McCready & Eddie Vedder', 229328, 7509304, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2154, N'Untitled', 178, 1, 1, N'Pearl Jam', 122801, 3957141, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2155, N'MFC', 178, 1, 1, N'Eddie Vedder', 148192, 4817665, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2156, N'Go', 178, 1, 1, N'Dave Abbruzzese & Jeff Ament & Stone Gossard & Mike McCready & Eddie Vedder', 161541, 5290810, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2156, N'', 178, 1, 1, N'Dave Abbruzzese & Jeff Ament & Stone Gossard & Mike McCready & Eddie Vedder', 161541, 5290810, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2157, N'Red Mosquito', 178, 1, 1, N'Jeff Ament & Stone Gossard & Jack Irons & Mike McCready & Eddie Vedder', 242991, 7944923, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2158, N'Even Flow', 178, 1, 1, N'Stone Gossard & Eddie Vedder', 317100, 10394239, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2159, N'Off He Goes', 178, 1, 1, N'Eddie Vedder', 343222, 11245109, 0.99);
@@ -3052,7 +3052,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2193, N'Once', 181, 1, 1, N'Stone Gossard', 231758, 7561555, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2194, N'Evenflow', 181, 1, 1, N'Stone Gossard', 293720, 9622017, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2195, N'Alive', 181, 1, 1, N'Stone Gossard', 341080, 11176623, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2196, N'Why Go', 181, 1, 1, N'Jeff Ament', 200254, 6539287, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2196, N'Why ', 181, 1, 1, N'Jeff Ament', 200254, 6539287, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2197, N'Black', 181, 1, 1, N'Dave Krusen/Stone Gossard', 343823, 11213314, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2198, N'Jeremy', 181, 1, 1, N'Jeff Ament', 318981, 10447222, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2199, N'Oceans', 181, 1, 1, N'Jeff Ament/Stone Gossard', 162194, 5282368, 0.99);
@@ -3060,7 +3060,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2201, N'Garden', 181, 1, 1, N'Jeff Ament/Stone Gossard', 299154, 9740738, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2202, N'Deep', 181, 1, 1, N'Jeff Ament/Stone Gossard', 258324, 8432497, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2203, N'Release', 181, 1, 1, N'Jeff Ament/Mike McCready/Stone Gossard', 546063, 17802673, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2204, N'Go', 182, 1, 1, N'Dave Abbruzzese/Eddie Vedder/Jeff Ament/Mike McCready/Stone Gossard', 193123, 6351920, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2204, N'', 182, 1, 1, N'Dave Abbruzzese/Eddie Vedder/Jeff Ament/Mike McCready/Stone Gossard', 193123, 6351920, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2205, N'Animal', 182, 1, 1, N'Dave Abbruzzese/Eddie Vedder/Jeff Ament/Mike McCready/Stone Gossard', 169325, 5503459, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2206, N'Daughter', 182, 1, 1, N'Dave Abbruzzese/Eddie Vedder/Jeff Ament/Mike McCready/Stone Gossard', 235598, 7824586, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2207, N'Glorified G', 182, 1, 1, N'Dave Abbruzzese/Eddie Vedder/Jeff Ament/Mike McCready/Stone Gossard', 206968, 6772116, 0.99);
@@ -3179,7 +3179,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2320, N'Perfect Circle', 190, 1, 4, N'R.E.M.', 208509, 6898067, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2321, N'Talk About The Passion', 190, 1, 4, N'R.E.M.', 203206, 6725435, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2322, N'So Central Rain', 190, 1, 4, N'R.E.M.', 194768, 6414550, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2323, N'Don''t Go Back To Rockville', 190, 1, 4, N'R.E.M.', 272352, 9010715, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2323, N'Don''t  Back To Rockville', 190, 1, 4, N'R.E.M.', 272352, 9010715, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2324, N'Pretty Persuasion', 190, 1, 4, N'R.E.M.', 229929, 7577754, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2325, N'Green Grow The Rushes', 190, 1, 4, N'R.E.M.', 225671, 7422425, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2326, N'Can''t Get There From Here', 190, 1, 4, N'R.E.M.', 220630, 7285936, 0.99);
@@ -3280,7 +3280,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2421, N'El Corazon Manda', 197, 1, 1, N'E.Weiss', 713534, 23519583, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2422, N'La Puesta Del Sol', 197, 1, 1, N'E.Weiss', 628062, 20614621, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2423, N'Persuasion', 197, 1, 1, N'Carlos Santana', 318432, 10354751, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2424, N'As The Years Go by', 197, 1, 1, N'Albert King', 233064, 7566829, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2424, N'As The Years  by', 197, 1, 1, N'Albert King', 233064, 7566829, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2425, N'Soul Sacrifice', 197, 1, 1, N'Carlos Santana', 296437, 9801120, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2426, N'Fried Neckbones And Home Fries', 197, 1, 1, N'W.Correa', 638563, 20939646, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2427, N'Santana Jam', 197, 1, 1, N'Carlos Santana', 882834, 29207100, 0.99);
@@ -3464,7 +3464,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2605, N'This Is Radio Clash', 211, 1, 4, N'The Clash', 249756, 8366573, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2606, N'Know Your Rights', 211, 1, 4, N'The Clash', 217678, 7195726, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2607, N'Rock The Casbah', 211, 1, 4, N'The Clash', 222145, 7361500, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2608, N'Should I Stay Or Should I Go', 211, 1, 4, N'The Clash', 187219, 6188688, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2608, N'Should I Stay Or Should I ', 211, 1, 4, N'The Clash', 187219, 6188688, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2609, N'War (The Process)', 212, 1, 1, N'Billy Duffy/Ian Astbury', 252630, 8254842, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2610, N'The Saint', 212, 1, 1, N'Billy Duffy/Ian Astbury', 216215, 7061584, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2611, N'Rise', 212, 1, 1, N'Billy Duffy/Ian Astbury', 219088, 7106195, 0.99);
@@ -3490,7 +3490,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2631, N'Heart Of Soul', 213, 1, 1, 274207, 8967257, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2632, N'Love', 213, 1, 1, 326739, 10729824, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2633, N'Wild Flower', 213, 1, 1, 215536, 7084321, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2634, N'Go West', 213, 1, 1, 238158, 7777749, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2634, N' West', 213, 1, 1, 238158, 7777749, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2635, N'Resurrection Joe', 213, 1, 1, 255451, 8532840, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2636, N'Sun King', 213, 1, 1, 368431, 12010865, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2637, N'Sweet Soul Sister', 213, 1, 1, 212009, 6889883, 0.99);
@@ -3524,7 +3524,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2665, N'Heart Of Stone', 216, 1, 1, N'Jagger/Richards', 164493, 5329538, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2666, N'Play With Fire', 216, 1, 1, N'Nanker Phelge', 132022, 4265297, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2667, N'Satisfaction', 216, 1, 1, N'Jagger/Richards', 226612, 7398766, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2668, N'As Tears Go By', 216, 1, 1, N'Jagger/Richards/Oldham', 164284, 5357350, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2668, N'As Tears  By', 216, 1, 1, N'Jagger/Richards/Oldham', 164284, 5357350, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2669, N'Get Off Of My Cloud', 216, 1, 1, N'Jagger/Richards', 176013, 5719514, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2670, N'Mother''s Little Helper', 216, 1, 1, N'Jagger/Richards', 167549, 5422434, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2671, N'19th Nervous Breakdown', 216, 1, 1, N'Jagger/Richards', 237923, 7742984, 0.99);
@@ -3553,7 +3553,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2694, N'New Faces', 218, 1, 1, N'Jagger/Richards', 172146, 5689122, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2695, N'Moon Is Up', 218, 1, 1, N'Jagger/Richards', 222119, 7366316, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2696, N'Out Of Tears', 218, 1, 1, N'Jagger/Richards', 327418, 10677236, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2697, N'I Go Wild', 218, 1, 1, N'Jagger/Richards', 264019, 8630833, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2697, N'I  Wild', 218, 1, 1, N'Jagger/Richards', 264019, 8630833, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2698, N'Brand New Car', 218, 1, 1, N'Jagger/Richards', 256052, 8459344, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2699, N'Sweethearts Together', 218, 1, 1, N'Jagger/Richards', 285492, 9550459, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2700, N'Suck On The Jugular', 218, 1, 1, N'Jagger/Richards', 268225, 8920566, 0.99);
@@ -3638,7 +3638,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2779, N'Esta É A Canção', 223, 1, 7, 184450, 6069933, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2780, N'Formigueiro', 223, 1, 7, 252943, 8455132, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2781, N'Comida', 224, 1, 4, N'Titãs', 322612, 10786578, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2782, N'Go Back', 224, 1, 4, N'Titãs', 230504, 7668899, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2782, N' Back', 224, 1, 4, N'Titãs', 230504, 7668899, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2783, N'Prá Dizer Adeus', 224, 1, 4, N'Titãs', 222484, 7382048, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2784, N'Família', 224, 1, 4, N'Titãs', 218331, 7267458, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (2785, N'Os Cegos Do Castelo', 224, 1, 4, N'Titãs', 296829, 9868187, 0.99);
@@ -3895,7 +3895,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3036, N'Dirty Day', 240, 1, 1, N'U2; Bono & Edge, The', 324440, 10652877, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3037, N'The Wanderer', 240, 1, 1, N'U2; Bono', 283951, 9258717, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3038, N'Breakfast In Bed', 241, 1, 8, 196179, 6513325, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3039, N'Where Did I Go Wrong', 241, 1, 8, 226742, 7485054, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3039, N'Where Did I  Wrong', 241, 1, 8, 226742, 7485054, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3040, N'I Would Do For You', 241, 1, 8, 334524, 11193602, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3041, N'Homely Girl', 241, 1, 8, 203833, 6790788, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3042, N'Here I Am (Come And Take Me)', 241, 1, 8, 242102, 8106249, 0.99);
@@ -3989,7 +3989,7 @@ INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3130, N'Vinicius, Poeta Do Encontro', 247, 1, 7, 336431, 10858776, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3131, N'Soneto Da Separacao', 247, 1, 7, 193880, 6277511, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3132, N'Still Of The Night', 141, 1, 3, N'Sykes', 398210, 13043817, 0.99);
-INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3133, N'Here I Go Again', 141, 1, 3, N'Marsden', 233874, 7652473, 0.99);
+INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3133, N'Here I  Again', 141, 1, 3, N'Marsden', 233874, 7652473, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3134, N'Is This Love', 141, 1, 3, N'Sykes', 283924, 9262360, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3135, N'Love Ain''t No Stranger', 141, 1, 3, N'Galley', 259395, 8490428, 0.99);
 INSERT INTO [dbo].[Track] ([TrackId], [Name], [AlbumId], [MediaTypeId], [GenreId], [Composer], [Milliseconds], [Bytes], [UnitPrice]) VALUES (3136, N'Looking For Love', 141, 1, 3, N'Sykes', 391941, 12769847, 0.99);
@@ -7101,7 +7101,7 @@ INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (14, N'Classical 101 
 INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (15, N'Classical 101 - The Basics');
 INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (16, N'Grunge');
 INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (17, N'Heavy Metal Classic');
-INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (18, N'On-The-Go 1');
+INSERT INTO [dbo].[Playlist] ([PlaylistId], [Name]) VALUES (18, N'On-The- 1');
 
 INSERT INTO [dbo].[PlaylistTrack] ([PlaylistId], [TrackId]) VALUES (1, 3402);
 INSERT INTO [dbo].[PlaylistTrack] ([PlaylistId], [TrackId]) VALUES (1, 3389);
