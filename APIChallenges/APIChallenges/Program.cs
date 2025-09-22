@@ -6,15 +6,15 @@ builder.Services.AddSingleton<StringService>();
 builder.Services.AddSingleton<TemperatureService>();
 builder.Services.AddSingleton<CalculatorService>();
 builder.Services.AddSingleton<ColorsService>();
-builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
+builder.Services.AddSingleton<UnitConverterService>();
+// builder.Services.AddSingleton<GuessGameService>(sp => new GuessGameService(1, 21));
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 builder.Host.UseSerilog();
 var app = builder.Build();
-// if (app.Environment.IsDevelopment())
-if (true)
+if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
@@ -52,31 +52,31 @@ app.MapGet("/calculator/divide/{a}/{b}", (double a, double b, CalculatorService 
 // CHALLENGE 2: Victor
 
 // Reverse text
-app.MapGet("/text/reverse/{text}", (string text, StringService stringService) =>
+app.MapGet("/text/reverse/{text}", (StringService stringService, string text) =>
 {
     return stringService.ReverseText(text);
 });
 
 // Uppercase text
-app.MapGet("/text/uppercase/{text}", (string text, StringService stringService) =>
+app.MapGet("/text/uppercase/{text}", (StringService stringService, string text) =>
 {
     return stringService.UppercaseText(text);
 });
 
 // Lowercase text
-app.MapGet("/text/lowercase/{text}", (string text, StringService stringService) =>
+app.MapGet("/text/lowercase/{text}", (StringService stringService, string text) =>
 {
     return stringService.LowercaseText(text);
 });
 
 // Count characters, words, vowels
-app.MapGet("/text/count/{text}", (string text, StringService stringService) =>
+app.MapGet("/text/count/{text}", (StringService stringService, string text) =>
 {
     return stringService.CountText(text);
 });
 
 // Check palindrome
-app.MapGet("/text/palindrome/{text}", (string text, StringService stringService) =>
+app.MapGet("/text/palindrome/{text}", (StringService stringService, string text) =>
 {
     return stringService.CheckPalindrome(text);
 });
@@ -102,33 +102,33 @@ app.MapGet("/colors/random", (ColorsService service) =>
     return Results.Ok(service.getRandomColor());
 });
 
-app.MapGet("/colors/search/{letter}", (string letter, ColorsService service) =>
+app.MapGet("/colors/search/{letter}", (ColorsService service, string letter) =>
 {
     return Results.Ok(service.searchColor(letter));
 });
 
-app.MapPost("/colors/add/{color}", (string color, ColorsService service) =>
+app.MapPost("/colors/add/{color}", (ColorsService service, string color) =>
 {
     service.addColor(color);
     return Results.Ok($"{color} added Successfully");
 });
 // CHALLENGE 6: Victor
-app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (double temp, TemperatureService temperatureService) =>
+app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (TemperatureService temperatureService, double temp) =>
 {
     return temperatureService.CelsiusToFahrenheit(temp);
 });
 
-app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (TemperatureService temperatureService, double temp) =>
 {
     return temperatureService.FahrenheitToCelsius(temp);
 });
 
-app.MapGet("/temp/kelvin-to-celsius/{temp}", (double temp, TemperatureService temperatureService) =>
+app.MapGet("/temp/kelvin-to-celsius/{temp}", (TemperatureService temperatureService, double temp) =>
 {
     return temperatureService.KelvinToCelsius(temp);
 });
 
-app.MapGet("/temp/celsius-to-kelvin/{temp}", (double temp, TemperatureService temperatureService) =>
+app.MapGet("/temp/celsius-to-kelvin/{temp}", (TemperatureService temperatureService, double temp) =>
 {
     return temperatureService.CelsiusToKelvin(temp);
 });
@@ -150,22 +150,22 @@ passwordGroup.MapGet("/strength/{password}", (string password) => Challenge7.Str
 
 
 // CHALLENGE 9: Nizar
-app.MapGroup("/convert");
-app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+var convertGroup = app.MapGroup("/convert");
+convertGroup.MapGet("/length/{value}/{fromUnit}/{toUnit}", (UnitConverterService unitConverterService, double value, string fromUnit, string toUnit) =>
 {
-    var result = service.convertLength(value, fromUnit, toUnit);
+    var result = unitConverterService.convertLength(value, fromUnit, toUnit);
     return Results.Ok(new { value, fromUnit, toUnit, result });
 });
 
-app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+convertGroup.MapGet("/weight/{value}/{fromUnit}/{toUnit}", (UnitConverterService unitConverterService, double value, string fromUnit, string toUnit) =>
 {
-    var result = service.convertWeight(value, fromUnit, toUnit);
+    var result = unitConverterService.convertWeight(value, fromUnit, toUnit);
     return Results.Ok(new { value, fromUnit, toUnit, result });
 });
 
-app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (double value, string fromUnit, string toUnit, UnitConverterService service) =>
+convertGroup.MapGet("/volume/{value}/{fromUnit}/{toUnit}", (UnitConverterService unitConverterService, double value, string fromUnit, string toUnit) =>
 {
-    var result = service.convertVolume(value, fromUnit, toUnit);
+    var result = unitConverterService.convertVolume(value, fromUnit, toUnit);
     return Results.Ok(new { value, fromUnit, toUnit, result });
 });
 

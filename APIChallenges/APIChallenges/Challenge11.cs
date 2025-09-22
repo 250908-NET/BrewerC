@@ -40,12 +40,15 @@ public class Challenge11
         string result;
         if (userChoice == aiChoice)
             result = "Draw";
-        else if ((userChoice == "rock" && aiChoice == "scissors") ||
-                 (userChoice == "paper" && aiChoice == "rock") ||
-                 (userChoice == "scissors" && aiChoice == "paper"))
+        else if (
+            (userChoice == "rock" && aiChoice == "scissors") ||
+            (userChoice == "paper" && aiChoice == "rock") ||
+            (userChoice == "scissors" && aiChoice == "paper")
+        )
             result = "You win!";
         else
             result = "You lose!";
+            
         return Results.Json(new { user = userChoice, ai = aiChoice, result });
     }
     public static IResult RollDice(int sides, int count)
