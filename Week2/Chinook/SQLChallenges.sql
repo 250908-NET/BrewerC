@@ -1,11 +1,12 @@
 -- SETUP:
-    -- Create a database server (docker)
-        -- docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=<password>" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
-    -- Connect to the server (Azure Data Studio / Database extension)
-    -- Test your connection with a simple query (like a select)
-    -- Execute the Chinook database (to create Chinook resources in your db)
+-- Create a database server (docker)
+-- docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=<password>" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
+-- Connect to the server (Azure Data Studio / Database extension)
+-- Test your connection with a simple query (like a select)
+-- Execute the Chinook database (from the Chinook_SQLServer.sql file to create Chinook resources in your server)
 
-    
+USE [Chinook];
+Go
 
 -- On the Chinook DB, practice writing queries with the following exercises
 
@@ -15,21 +16,20 @@
 select "FirstName", "LastName", "CustomerId", "Country" from "Customer" where "Country" <> 'USA';
 
 -- List all customers from Brazil
-    
+
 -- List all sales agents
 
 -- Retrieve a list of all countries in billing addresses on invoices
 
 -- Retrieve how many invoices there were in 2009, and what was the sales total for that year?
 
-    -- (challenge: find the invoice count sales total for every year using one query)
+-- (challenge: find the invoice count sales total for every year using one query)
 
 -- how many line items were there for invoice #37
 
 -- how many invoices per country? BillingCountry  # of invoices -
 
 -- Retrieve the total sales per country, ordered by the highest total sales first.
-
 
 -- JOINS CHALLENGES
 -- Every Album by Artist
@@ -50,8 +50,6 @@ select "FirstName", "LastName", "CustomerId", "Country" from "Customer" where "C
 
 -- Which customers have the same initials as at least one other customer?
 
-
-
 -- ADVACED CHALLENGES
 -- solve these with a mixture of joins, subqueries, CTE, and set operators.
 -- solve at least one of them in two different ways, and see if the execution
@@ -71,7 +69,6 @@ select "FirstName", "LastName", "CustomerId", "Country" from "Customer" where "C
 
 -- 6. list the names and countries of the customers supported by an employee
 --    who was hired younger than 35.
-
 
 -- DML exercises
 

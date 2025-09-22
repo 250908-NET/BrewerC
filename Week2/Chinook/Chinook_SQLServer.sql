@@ -1,3 +1,4 @@
+-- Active: 1758555582352@@127.0.0.1@1433@master
 
 /*******************************************************************************
    Chinook Database - Version 1.4
@@ -10,7 +11,11 @@
 CREATE DATABASE MyDatabase;
 
 
-USE MyDatabase;
+CREATE DATABASE [Chinook];
+GO
+
+USE Chinook;
+GO
 
 /*******************************************************************************
    Create Tables
@@ -22,7 +27,6 @@ CREATE TABLE [dbo].[Album]
     [ArtistId] INT NOT NULL,
     CONSTRAINT [PK_Album] PRIMARY KEY CLUSTERED ([AlbumId])
 );
-
 
 CREATE TABLE [dbo].[Artist]
 (
