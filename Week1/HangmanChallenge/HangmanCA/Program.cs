@@ -43,7 +43,6 @@ namespace HangmanCA
                         break;
                     case "4":
                         return;
-                        break;
                     default:
                         Console.WriteLine("Enter a number");
                         break;
@@ -110,7 +109,6 @@ namespace HangmanCA
                 guessedWord = getCurrentWord(guessedLetters, selectedWord);
             }
 
-            Console.WriteLine("------------------------------------------------");
             if (selectedWord == guessedWord)
             {
                 Console.WriteLine($"Congratulations! The Word is {selectedWord}!");
@@ -119,6 +117,7 @@ namespace HangmanCA
             {
                 Console.WriteLine($"Oh no, better luck next time. The Word was {selectedWord}!");
             }
+            Console.WriteLine("------------------------------------------------");
         }
 
         public static List<char> getGuessedLetters(Dictionary<char, bool> guessedLetters)
