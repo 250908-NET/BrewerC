@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using School.Data;
 using School.Models;
+using School.Services;
+using School.Repositories;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +13,19 @@ string CS = File.ReadAllText("../connection_string.env");
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<SchoolDbContext>(options => options.UseSqlServer(CS));
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IInstructorService, InstructorService>();
+builder.Serivces.AddScoped<ICourseService, CourseService>();
+
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger(); // read from appsettings.json
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -27,6 +42,17 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", () => {
     return "Hello world";
+});
+
+app.MapGet("/students", async (IStudentService service) => 
+{
+    Result.OK(await service.GetAllAsync());
+});
+
+app.MapGet("/students/{id}", async (IStudentService service, int id) =>
+{
+    var student = await service.GetbyIdAsync(id);
+    return student is not null ? Results.OK(student) : Results.NotFound();
 });
 
 app.Run();
