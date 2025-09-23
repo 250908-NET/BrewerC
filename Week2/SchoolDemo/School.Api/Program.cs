@@ -22,7 +22,7 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
-builder.Serivces.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger(); // read from appsettings.json
 builder.Host.UseSerilog();
@@ -46,13 +46,13 @@ app.MapGet("/", () => {
 
 app.MapGet("/students", async (IStudentService service) => 
 {
-    Result.OK(await service.GetAllAsync());
+    Results.Ok(await service.GetAllAsync());
 });
 
 app.MapGet("/students/{id}", async (IStudentService service, int id) =>
 {
-    var student = await service.GetbyIdAsync(id);
-    return student is not null ? Results.OK(student) : Results.NotFound();
+    var student = await service.GetByIdAsync(id);
+    return student is not null ? Results.Ok(student) : Results.NotFound();
 });
 
 app.Run();

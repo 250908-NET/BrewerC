@@ -20,7 +20,8 @@ namespace School.Repositories
 
         public async Task<Student?> GetByIdAsync(int id)
         {
-            return await _context.Students.where( student => student.id  == id);
+            //return await _context.Students.Where( student => student.id  == id);
+            throw new NotImplementedException();
         }
 
         public async Task AddAsync(Student student)

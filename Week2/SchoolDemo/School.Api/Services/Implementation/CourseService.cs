@@ -12,9 +12,9 @@ namespace School.Services
             _repo = repo;
         }
 
-        public async Task<List<Course>> GetAllAsync() => _repo.GetAllAsync();
+        public async Task<List<Course>> GetAllAsync() => await _repo.GetAllAsync();
 
-        public async Task<Course?> GetByIdAsync(int id) => _repo.GetByIdAsync(id);
+        public async Task<Course?> GetByIdAsync(int id) => await _repo.GetByIdAsync(id);
 
         public async Task CreateAsync(Course course)
         {

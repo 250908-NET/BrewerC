@@ -4,9 +4,9 @@ namespace School.Repositories
 {
     public interface IStudentRepository
     {
-        public async Task<List<Student>> GetAllAsync();
-        public async Task<Student?> GetByIdAsync(int id);
-        public async Task AddAsync(Student student);
-        public async Task SaveChangesAsync();
+        public Task<List<Student>> GetAllAsync();
+        public Task<Student?> GetByIdAsync(int id);
+        public Task AddAsync(Student student);
+        public Task SaveChangesAsync();
     }
 }
