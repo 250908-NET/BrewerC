@@ -8,29 +8,31 @@ namespace School.Repositories
     {
         private readonly SchoolDbContext _context;
 
-        public InstructorRepository(SchoolDbContext context)
+        public InstructorRepository(SchoolDbContext context) => _context = context;
+
+        public async Task<List<Instructor>> GetAllAsync() => await _context.Instructors.Include(e => e.Courses).ToListAsync();
+
+        public async Task<Instructor?> GetByIdAsync(int id) => await _context.Instructors.Include(e => e.Courses).FirstOrDefaultAsync(e => e.Id == id);
+
+        public async Task AddAsync(Instructor instructor) 
         {
-            _context = context;
+            await _context.Instructors.AddAsync(instructor);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task UpdateAsync(int id, Instructor instructor)
+        {
+            _context.Instructors.Update(instructor);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<Instructor>> GetAllAsync()
+        public async Task DeleteAsync(int id)
         {
-           throw new NotImplementedException();
+            var instructor = await _context.Instructors.FindAsync(id);
+            _context.Instructors.Remove(instructor);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Instructor?> GetByIdAsync(int id)
-        {
-           throw new NotImplementedException();
-        }
-
-        public Task AddAsync(Instructor instructor)
-        {
-           throw new NotImplementedException();
-        }
-
-        public Task SaveChangesAsync()
-        {
-           throw new NotImplementedException();
-        }
+        public async Task<bool> Exists(int id) => await _context.Instructors.AnyAsync(e => e.Id == id);
     }
 }

@@ -7,6 +7,9 @@ namespace School.Repositories
         public Task<List<Student>> GetAllAsync();
         public Task<Student?> GetByIdAsync(int id);
         public Task AddAsync(Student student);
-        public Task SaveChangesAsync();
+        public Task UpdateAsync(int id, Student student);
+        public Task DeleteAsync(int id);
+        public Task<bool> Exists(int id);
+        public Task EnrollAsync(int studentId, int courseId);
     }
 }
