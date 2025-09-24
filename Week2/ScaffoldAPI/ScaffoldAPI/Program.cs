@@ -1,3 +1,4 @@
+
 using ScaffoldAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
@@ -22,5 +23,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+var rootGroup = app.MapGroup("/");
+rootGroup.MapGet("", () => "Hello World");
 
 app.Run();
