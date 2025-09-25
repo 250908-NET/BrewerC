@@ -9,6 +9,7 @@ namespace School.Services
 
         public StudentService(IStudentRepository repo)
         {
+            if (repo == null) throw new ArgumentNullException(nameof(repo));
             _repo = repo;
         }
 

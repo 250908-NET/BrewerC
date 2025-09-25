@@ -22,12 +22,17 @@ namespace School.Repositories
         
         public async Task UpdateAsync(int id, Instructor instructor)
         {
-            _context.Instructors.Update(instructor);
+            if (await _context.Instructors.FindAsync(id) is null) throw new InvalidOperationException("*Instructor with ID " + id + " not found*");
+            instructor.Id = id;
+            
+            var existing = await _context.Instructors.FindAsync(id);
+            _context.Entry(existing).CurrentValues.SetValues(instructor);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
+            if (await _context.Instructors.FindAsync(id) is not Instructor existing) return;
             var instructor = await _context.Instructors.FindAsync(id);
             _context.Instructors.Remove(instructor);
             await _context.SaveChangesAsync();

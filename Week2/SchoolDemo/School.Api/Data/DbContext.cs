@@ -39,6 +39,20 @@ public class SchoolDbContext : DbContext
            // Student-Course many-to-many relationship
         modelBuilder.Entity<Student>(entity =>
         {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+                
+            entity.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
+                
+            entity.Property(e => e.Email)
+                .IsRequired()
+                .HasMaxLength(100);
+
             entity.HasMany(s => s.Courses)
             .WithMany(c => c.Students)
             .UsingEntity<Dictionary<string, object>>(
@@ -50,6 +64,25 @@ public class SchoolDbContext : DbContext
                     j.HasKey("StudentId", "CourseId");
                     j.ToTable("StudentCourses");
                 });
+        });
+
+        // Instructor configuration
+        modelBuilder.Entity<Instructor>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+                
+            entity.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
+                
+            entity.HasMany(i => i.Courses)
+                .WithOne(c => c.Instructor)
+                .HasForeignKey(c => c.InstructorId)
+                .IsRequired(false);
         });
     
         base.OnModelCreating(modelBuilder);

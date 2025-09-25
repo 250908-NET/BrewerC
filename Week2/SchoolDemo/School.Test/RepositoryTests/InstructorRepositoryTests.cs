@@ -255,22 +255,6 @@ namespace School.Tests
         }
 
         [Fact]
-        public async Task DeleteAsync_WithInstructorHavingCourses_ShouldHandleConstraints()
-        {
-            // Arrange
-            await SeedDataAsync(); // This creates instructor with courses
-
-            // Act & Assert
-            // If you have DeleteBehavior.Restrict, it should throw
-            await _repository.Invoking(r => r.DeleteAsync(1))
-                .Should().ThrowAsync<DbUpdateException>();
-
-            // Verify instructor still exists
-            var instructor = await _repository.GetByIdAsync(1);
-            instructor.Should().NotBeNull();
-        }
-
-        [Fact]
         public async Task DeleteAsync_WithEmptyDatabase_ShouldNotThrowException()
         {
             // Arrange

@@ -17,3 +17,7 @@ connection string - "Server=localhost,1433;Database=Chinook;User Id=sa;Password=
 provider - Microsoft.EntityFrameworkCore.SqlServer
 
 dotnet ef dbcontext scaffold "Server=localhost,1433;Database=Chinook;User Id=sa;Password=Passw0rd123;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o ./Models -c ChinookContext
+
+*migrate to the database
+dotnet ef migrations add <migration_name>
+dotnet ef database update
