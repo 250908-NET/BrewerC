@@ -19,10 +19,10 @@ namespace School.Services
             return await _repo.GetByIdAsync(id);
         }
 
-        public async Task CreateAsync(Student student)
+        public async Task<Student> CreateAsync(Student student)
         {
             // the long-hand way
-            await _repo.AddAsync(student);
+            return await _repo.AddAsync(student);
         }
 
         // the short-hand way

@@ -24,10 +24,12 @@ namespace School.Repositories
             return await _context.Students.Include(e => e.Courses).FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task AddAsync(Student student) 
+        public async Task<Student> AddAsync(Student student) 
         {
             await _context.Students.AddAsync(student);
             await _context.SaveChangesAsync();
+            Student newStudent = await _context.Students.FirstOrDefaultAsync(e => e.FirstName == student.FirstName && e.LastName == student.LastName && e.Email == student.Email);
+            return newStudent;
         }
         
         public async Task UpdateAsync(int id, Student student) 

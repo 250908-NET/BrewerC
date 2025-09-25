@@ -69,8 +69,8 @@ app.MapGet("/students/{id}", async (ILogger<Program> logger, IStudentService ser
 app.MapPost("/students", async (ILogger<Program> logger, IStudentService service, Student student) =>
 {
     logger.LogInformation("Creating student");
-    await service.CreateAsync(student);
-    return Results.Created($"/students/{student.Id}", student);
+    Student createdStudent = await service.CreateAsync(student);
+    return Results.Created($"/students/{student.Id}", createdStudent);
 });
 
 app.MapPut("/students/{id}", async (ILogger<Program> logger, IStudentService service, int id, Student student) =>
