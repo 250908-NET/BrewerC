@@ -15,23 +15,57 @@ namespace School.Repositories
 
         public async Task<List<Student>> GetAllAsync()
         {
-           return await _context.Students.ToListAsync();
+            List<Student> students = await _context.Students.Include(e => e.Courses).ToListAsync();
+            return students;
         }
 
         public async Task<Student?> GetByIdAsync(int id)
         {
-            //return await _context.Students.Where( student => student.id  == id);
-            throw new NotImplementedException();
+            return await _context.Students.Include(e => e.Courses).FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task AddAsync(Student student)
+        public async Task<Student> AddAsync(Student student) 
         {
             await _context.Students.AddAsync(student);
+            await _context.SaveChangesAsync();
+            Student newStudent = await _context.Students.FirstOrDefaultAsync(e => e.FirstName == student.FirstName && e.LastName == student.LastName && e.Email == student.Email);
+            return newStudent;
+        }
+        
+        public async Task UpdateAsync(int id, Student student) 
+        {
+            _context.Students.Update(student);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
+        public async Task DeleteAsync(int id)
         {
+            var student = await _context.Students.FindAsync(id);
+            _context.Students.Remove(student);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int id) => await _context.Students.AnyAsync(e => e.Id == id);
+
+        public async Task EnrollAsync(int studentId, int courseId) 
+        {
+            var student = await _context.Students
+                .Include(s => s.Courses)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+                
+            if (student == null)
+                throw new ArgumentException($"Student with ID {studentId} not found");
+
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null)
+                throw new ArgumentException($"Course with ID {courseId} not found");
+
+            // Check if already enrolled
+            if (!student.Courses.Any(c => c.Id == courseId))
+            {
+                student.Courses.Add(course);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

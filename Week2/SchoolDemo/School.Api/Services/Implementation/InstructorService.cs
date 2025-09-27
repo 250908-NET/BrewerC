@@ -9,6 +9,7 @@ namespace School.Services
 
         public InstructorService(IInstructorRepository repo)
         {
+            if (repo == null) throw new ArgumentNullException(nameof(repo));
             _repo = repo;
         }
 
@@ -19,7 +20,18 @@ namespace School.Services
         public async Task CreateAsync(Instructor instructor)
         {
             await _repo.AddAsync(instructor);
-            await _repo.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(int id, Instructor instructor) 
+        {
+            await _repo.UpdateAsync(id, instructor);
+        }
+
+        public async Task DeleteAsync(int id) 
+        {
+            await _repo.DeleteAsync(id);
+        }
+
+        public async Task<bool> Exists(int id) => await _repo.Exists(id);
     }
 }
