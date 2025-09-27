@@ -19,8 +19,15 @@ Remove the dashes before entering into DB
 ## Server Definition
 | Name | Type | Additional Info |
 |*|*|*|
+| Id | int |  |
 | IP Address | string |  |
 | Port | int | 0 - 65383 |
 | name | string | Server name |
 
+## Server Connection
+| Name | Type | Additional Info |
+|*|*|*|
+| Id | int |  |
+| ServerId | int | FK to server definition |
+| PlayerBiId | String | FK to Player Record |
 
