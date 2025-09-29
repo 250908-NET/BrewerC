@@ -7,7 +7,7 @@
 - Your application components must be loosely coupled, and exemplify a Service Oriented Architecture
 
 ### SQL Database
-- Your database must use MS SQL Server Express
+- Your database must use MS SQL Server
 - Your database must run inside of a docker container
 - Your database should be in 3rd normal form
 - Your database should include at least one many-to-many relationship
@@ -28,7 +28,7 @@
 ### Frontend
 - Your frontend must be written in "vanilla JavaScript", with HTML5, CSS3, and JavaScript
 - Your frontend must interact with your API for data persistence
-- Your frontend must use the React library. 
+- Your frontend may use the React library.
     - Your frontend must include at least three components, with at least one nested component. (At least one parent-child relationship, and at least one other unrelated component).
         - Your components should include at least one component that implements `useState`.
         - Your components should include at least one component with props.
@@ -48,6 +48,6 @@
     - meeting notes should be kept to record development progress
 
 ## Project Presentation
-- Project presentation will be done on Friday 8/9 afternoon
+- Project presentation will be done on Friday 10/10 afternoon
 - You should demo the application functionality by completing the planned user stories
 - Your presentation should be about 10 minutes long, no longer than 15 minutes (at 20 min, you will be cut off so that there is time for everyone to present)
