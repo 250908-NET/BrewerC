@@ -52,5 +52,29 @@ namespace School.Controllers
             await _service.CreateAsync(student);
             return Created($"/students/{student.Id}", student);
         }
+
+        // Update
+        [HttpPut("{id}", Name = "UpdateStudent")]
+        // "/students/{id}"
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] Student student)
+        {
+            _logger.LogInformation("Updating student {id}", id);
+            if (! await _service.Exists(id)) 
+            {
+                return BadRequest();
+            }
+            await _service.UpdateAsync(id, student);
+            return Ok(await _service.GetByIdAsync(id));
+        }
+
+        // Delete
+        [HttpDelete("{id}", Name = "DeleteStudent")]
+        // "/students/{id}"
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            _logger.LogInformation("Deleting student {id}", id);
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

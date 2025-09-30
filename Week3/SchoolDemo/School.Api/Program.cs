@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 string CS = File.ReadAllText("../connection_string.env");
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(); // let's add the controller classes as well...
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -52,6 +52,7 @@ app.MapGet("/", () => {
     return "Hello world";
 });
 
+// With the controller classes, all of these methods will be handled by our controllers and can be "removed" for now.
 
 // -------------------------- STUDENT -------------------------- //
 // app.MapGet("/students", async (ILogger<Program> logger, IStudentService service) => 
@@ -74,24 +75,24 @@ app.MapGet("/", () => {
 //     return Results.Created($"/students/{student.Id}", createdStudent);
 // });
 
-app.MapPut("/students/{id}", async (ILogger<Program> logger, IStudentService service, int id, Student student) =>
-{
-    logger.LogInformation("Updating student {id}", id);
-    if (! await service.Exists(id)) 
-    {
-        return Results.BadRequest();
-    }
+// app.MapPut("/students/{id}", async (ILogger<Program> logger, IStudentService service, int id, Student student) =>
+// {
+//     logger.LogInformation("Updating student {id}", id);
+//     if (! await service.Exists(id)) 
+//     {
+//         return Results.BadRequest();
+//     }
 
-    await service.UpdateAsync(id, student);
-    return Results.Ok(await service.GetByIdAsync(id));
-});
+//     await service.UpdateAsync(id, student);
+//     return Results.Ok(await service.GetByIdAsync(id));
+// });
 
-app.MapDelete("/students/{id}", async (ILogger<Program> logger, IStudentService service, int id) =>
-{
-    logger.LogInformation("Deleting student {id}", id);
-    await service.DeleteAsync(id);
-    return Results.NoContent();
-});
+// app.MapDelete("/students/{id}", async (ILogger<Program> logger, IStudentService service, int id) =>
+// {
+//     logger.LogInformation("Deleting student {id}", id);
+//     await service.DeleteAsync(id);
+//     return Results.NoContent();
+// });
 
 
 // -------------------------- INSTRUCTOR -------------------------- //
@@ -184,6 +185,6 @@ app.MapPost("/enrollments/{studentId}/{courseId}", async (ILogger<Program> logge
     return Results.Ok();
 });
 
-app.MapControllers();
+app.MapControllers(); // To complete our controller implementation, we need to let the framework know that we want to use the controllers.
 
 app.Run();
