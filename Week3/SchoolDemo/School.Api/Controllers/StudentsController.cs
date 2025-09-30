@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using School.DTO;
 using School.Models;
 using School.Services;
@@ -74,7 +74,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Creating student {student}", student);
             await _service.CreateAsync(student);
-            return Created($"/students/{student.Id}", student);
+            return Created($"/students/{student.Id}", _mapper.Map<StudentDTO>(student));
         }
 
         // Update
@@ -88,7 +88,8 @@ namespace School.Controllers
                 return BadRequest();
             }
             await _service.UpdateAsync(id, student);
-            return Ok(await _service.GetByIdAsync(id));
+            var updatedStudent = await _service.GetByIdAsync(id);
+            return updatedStudent is not null ? Ok(_mapper.Map<StudentDTO>(updatedStudent)) : NotFound();
         }
 
         // Delete

@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using School.DTO;
 using School.Models;
 using School.Services;
 using Serilog;
@@ -12,12 +14,14 @@ namespace School.Controllers
     {
         // Fields
         private readonly ILogger<CoursesController> _logger;
+        private readonly IMapper _mapper;
         private readonly ICourseService _service;
 
         // Constructor
-        public CoursesController(ILogger<CoursesController> logger, ICourseService service)
+        public CoursesController(ILogger<CoursesController> logger, IMapper mapper, ICourseService service)
         {
             _logger = logger;
+            _mapper = mapper;
             _service = service;
         }
 
@@ -28,7 +32,7 @@ namespace School.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             _logger.LogInformation("Getting all courses");
-            return Ok(await _service.GetAllAsync());
+            return Ok(_mapper.Map<List<CourseDTO>>(await _service.GetAllAsync()));
         }
 
         // Get By Id
@@ -37,7 +41,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Getting course {id}", id);
             var course = await _service.GetByIdAsync(id);
-            return course is not null ? Ok(course) : NotFound();
+            return course is not null ? Ok(_mapper.Map<CourseDTO>(course)) : NotFound();
         }
 
         // Create
@@ -46,7 +50,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Creating course");
             var createdCourse = await _service.CreateAsync(course);
-            return Created($"/courses/{createdCourse.Id}", createdCourse);
+            return Created($"/courses/{createdCourse.Id}", _mapper.Map<CourseDTO>(createdCourse));
         }
 
         // Update
@@ -60,7 +64,7 @@ namespace School.Controllers
             }
 
             await _service.UpdateAsync(id, course);
-            return Ok(await _service.GetByIdAsync(id));
+            return Ok(_mapper.Map<CourseDTO>(await _service.GetByIdAsync(id)));
         }
 
         // Delete

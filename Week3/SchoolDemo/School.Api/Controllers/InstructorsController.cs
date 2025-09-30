@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using School.DTO;
 using School.Models;
 using School.Services;
 using Serilog;
@@ -12,12 +14,14 @@ namespace School.Controllers
     {
         // Fields
         private readonly ILogger<InstructorsController> _logger;
+        private readonly IMapper _mapper;
         private readonly IInstructorService _service;
 
         // Constructor
-        public InstructorsController(ILogger<InstructorsController> logger, IInstructorService service)
+        public InstructorsController(ILogger<InstructorsController> logger, IMapper mapper, IInstructorService service)
         {
             _logger = logger;
+            _mapper = mapper;
             _service = service;
         }
 
@@ -30,7 +34,7 @@ namespace School.Controllers
         {
             // all private values are already present...
             _logger.LogInformation("Getting all instructors");
-            return Ok(await _service.GetAllAsync());
+            return Ok(_mapper.Map<List<InstructorDTO>>(await _service.GetAllAsync()));
         }
 
         // Get By Id
@@ -40,7 +44,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Getting instructor {id}", id);
             var instructor = await _service.GetByIdAsync(id);
-            return instructor is not null ? Ok(instructor) : NotFound();
+            return instructor is not null ? Ok(_mapper.Map<InstructorDTO>(instructor)) : NotFound();
         }
 
         // Create
@@ -50,7 +54,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Creating instructor");
             await _service.CreateAsync(instructor);
-            return Created($"/instructors/{instructor.Id}", instructor);
+            return Created($"/instructors/{instructor.Id}", _mapper.Map<InstructorDTO>(instructor));
         }
 
         // Update
@@ -65,7 +69,7 @@ namespace School.Controllers
             }
 
             await _service.UpdateAsync(id, instructor);
-            return Ok(await _service.GetByIdAsync(id));
+            return Ok(_mapper.Map<InstructorDTO>(await _service.GetByIdAsync(id)));
         }
 
         // Delete

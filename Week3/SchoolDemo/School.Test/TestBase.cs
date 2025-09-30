@@ -27,7 +27,8 @@ namespace School.Tests
             {
                 Id = 1,
                 FirstName = "John",
-                LastName = "Doe"
+                LastName = "Doe",
+                Email = "john.doe@instructor.edu"
             };
 
             var student1 = new Student

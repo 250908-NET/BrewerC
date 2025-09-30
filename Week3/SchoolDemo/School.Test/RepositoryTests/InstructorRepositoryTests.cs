@@ -26,7 +26,7 @@ namespace School.Tests
             // Assert
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
-            result.Should().Contain(i => i.FirstName == "John" && i.LastName == "Doe");
+            result.Should().Contain(i => i.FirstName == "John" && i.LastName == "Doe" && i.Email == "john.doe@instructor.edu");
         }
 
         [Fact]
@@ -38,7 +38,8 @@ namespace School.Tests
             var additionalInstructor = new Instructor
             {
                 FirstName = "Jane",
-                LastName = "Smith"
+                LastName = "Smith",
+                Email = "jane.smith@instructor.edu"
             };
             
             await _repository.AddAsync(additionalInstructor);
@@ -79,6 +80,7 @@ namespace School.Tests
             result.Should().NotBeNull();
             result.FirstName.Should().Be("John");
             result.LastName.Should().Be("Doe");
+            result.Email.Should().Be("john.doe@instructor.edu");
         }
 
         [Fact]
@@ -114,7 +116,8 @@ namespace School.Tests
             var newInstructor = new Instructor
             {
                 FirstName = "Alice",
-                LastName = "Johnson"
+                LastName = "Johnson",
+                Email = "alice.johnson@instructor.edu"
             };
 
             // Act
@@ -128,14 +131,15 @@ namespace School.Tests
             instructorInDb.Should().NotBeNull();
             instructorInDb.FirstName.Should().Be("Alice");
             instructorInDb.LastName.Should().Be("Johnson");
+            instructorInDb.Email.Should().Be("alice.johnson@instructor.edu");
         }
 
         [Fact]
         public async Task AddAsync_WithMultipleInstructors_ShouldAddAll()
         {
             // Arrange
-            var instructor1 = new Instructor { FirstName = "Alice", LastName = "Johnson" };
-            var instructor2 = new Instructor { FirstName = "Bob", LastName = "Smith" };
+            var instructor1 = new Instructor { FirstName = "Alice", LastName = "Johnson", Email = "alice.johnson@instructor.edu" };
+            var instructor2 = new Instructor { FirstName = "Bob", LastName = "Smith", Email = "bob.smith@instructor.edu" };
 
             // Act
             await _repository.AddAsync(instructor1);
@@ -169,7 +173,8 @@ namespace School.Tests
             {
                 Id = 1,
                 FirstName = "UpdatedJohn",
-                LastName = "UpdatedDoe"
+                LastName = "UpdatedDoe",
+                Email = "updated.john.doe@instructor.edu"
             };
 
             // Act
@@ -180,6 +185,7 @@ namespace School.Tests
             result.Should().NotBeNull();
             result.FirstName.Should().Be("UpdatedJohn");
             result.LastName.Should().Be("UpdatedDoe");
+            result.Email.Should().Be("updated.john.doe@instructor.edu");
         }
 
         [Fact]
@@ -209,7 +215,8 @@ namespace School.Tests
             {
                 Id = 999, // Different from parameter ID
                 FirstName = "UpdatedJohn",
-                LastName = "UpdatedDoe"
+                LastName = "UpdatedDoe",
+                Email = "updated.john.doe@instructor.edu"
             };
 
             // Act
@@ -220,6 +227,7 @@ namespace School.Tests
             result.Should().NotBeNull();
             result.FirstName.Should().Be("UpdatedJohn");
             result.LastName.Should().Be("UpdatedDoe");
+            result.Email.Should().Be("updated.john.doe@instructor.edu");
         }
 
         [Fact]
@@ -327,8 +335,8 @@ namespace School.Tests
         public async Task AddAsync_ShouldGenerateUniqueIds()
         {
             // Arrange
-            var instructor1 = new Instructor { FirstName = "Alice", LastName = "Johnson" };
-            var instructor2 = new Instructor { FirstName = "Bob", LastName = "Smith" };
+            var instructor1 = new Instructor { FirstName = "Alice", LastName = "Johnson", Email = "alice.johnson@instructor.edu" };
+            var instructor2 = new Instructor { FirstName = "Bob", LastName = "Smith", Email = "bob.smith@instructor.edu" };
 
             // Act
             await _repository.AddAsync(instructor1);
@@ -341,16 +349,17 @@ namespace School.Tests
         }
 
         [Theory]
-        [InlineData("John", "Doe")]
-        [InlineData("Jane", "Smith")]
-        [InlineData("Alice", "Johnson")]
-        public async Task AddAsync_WithVariousNames_ShouldAddSuccessfully(string firstName, string lastName)
+        [InlineData("John", "Doe", "john.doe@instructor.edu")]
+        [InlineData("Jane", "Smith", "jane.smith@instructor.edu")]
+        [InlineData("Alice", "Johnson", "alice.johnson@instructor.edu")]
+        public async Task AddAsync_WithVariousNames_ShouldAddSuccessfully(string firstName, string lastName, string email)
         {
             // Arrange
             var instructor = new Instructor
             {
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                Email = email
             };
 
             // Act
@@ -361,6 +370,7 @@ namespace School.Tests
             result.Should().NotBeNull();
             result.FirstName.Should().Be(firstName);
             result.LastName.Should().Be(lastName);
+            result.Email.Should().Be(email);
         }
     }
 }
