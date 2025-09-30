@@ -50,7 +50,8 @@ dotnet test \
     --collect:"XPlat Code Coverage" \
     --results-directory:"$COVERAGE_OUTPUT_DIR" \
     --logger:"console;verbosity=detailed" \
-    -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+    -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura \
+    &> /dev/null
 
 # Check if tests ran successfully
 if [ $? -ne 0 ]; then
@@ -77,7 +78,8 @@ reportgenerator \
     -reporttypes:Html \
     -title:"$TEST_PROJECT_PATH" \
     -tag:"$(date +%Y-%m-%d_%H-%M-%S)" \
-    -classfilters:"-*Migrations*;-*Migration;-*.Migrations.*;-*DbContext*"
+    -classfilters:"-*Migrations*;-*Migration;-*.Migrations.*;-*DbContext*" \
+    &> /dev/null
 
 # Check if report generation was successful
 if [ $? -ne 0 ]; then

@@ -46,16 +46,19 @@ echo -e "${BLUE}🚀 .NET Development Startup Script${NC}"
 echo -e "${BLUE}====================================${NC}"
 echo ""
 
+
 # Step 1: Restore the solution
 print_header "📦 Step 1: Restoring Solution"
 cd "$SOLUTION_PATH" || handle_error "Solution directory not found"
 dotnet restore
 check_success "Failed to restore solution" "Solution restored successfully"
 
+
 # Step 2: Build the application
 print_header "🔨 Step 2: Building Application"
 dotnet build --no-restore
 check_success "Failed to build application" "Application built successfully"
+
 
 # Step 3: Build the unit tests
 print_header "🧪 Step 3: Building Unit Tests"
@@ -64,24 +67,78 @@ check_success "Failed to build unit tests" "Unit tests built successfully"
 
 # Step 4: Check for model changes and create migration if needed
 print_header "🗄️  Step 4: Checking for Database Changes"
-cd "$API_PROJECT_PATH" || handle_error "API project directory not found"
+
+cd "$API_PROJECT_PATH" || handle_error "API project directory not found at: $API_PROJECT_PATH"
 
 echo -e "${YELLOW}Checking if migration is needed...${NC}"
 
-# Try to create a migration with a timestamp name
-MIGRATION_NAME="AutoMigration_$(date +%Y%m%d_%H%M%S)"
-dotnet ef migrations add "$MIGRATION_NAME" --no-build > /dev/null 2>&1
+# Check if EF Core tools are installed
+if ! command -v dotnet-ef &> /dev/null && ! dotnet ef --version &> /dev/null; then
+    echo -e "${RED}⚠️  EF Core tools not found. Installing...${NC}"
+    dotnet tool install --global dotnet-ef
+    check_success "Failed to install EF Core tools" "EF Core tools installed"
+fi
 
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ New migration created: $MIGRATION_NAME${NC}"
+# Check EF Core version
+EF_VERSION_OUTPUT=$(dotnet ef --version 2>&1)
+
+# Extract major version only (e.g., "9" from "9.0.9")
+EF_MAJOR_VERSION=$(echo "$EF_VERSION_OUTPUT" | grep -oP '\d+\.\d+\.\d+' | head -n 1 | cut -d. -f1)
+echo -e "${BLUE}🔍 Debug: Detected EF Core major version: ${EF_MAJOR_VERSION:-'unknown'}${NC}"
+
+# Check if version is 8 or higher (simple integer comparison)
+if [ -n "$EF_MAJOR_VERSION" ] && [ "$EF_MAJOR_VERSION" -ge 8 ] 2>/dev/null; then
+    
+    # EF Core 8+ has a built-in command
+    PENDING_OUTPUT=$(dotnet ef migrations has-pending-model-changes --no-build 2>&1)
+    HAS_CHANGES=$?
+    
+    if [ $HAS_CHANGES -eq 0 ]; then
+        echo -e "${YELLOW}ℹ️  No model changes detected - skipping migration${NC}"
+    elif [ $HAS_CHANGES -eq 1 ]; then
+        MIGRATION_NAME="AutoMigration_$(date +%Y%m%d_%H%M%S)"
+        echo -e "${BLUE}🔍 Debug: Changes detected! Creating migration: $MIGRATION_NAME${NC}"
+        
+        MIGRATION_ADD_OUTPUT=$(dotnet ef migrations add "$MIGRATION_NAME" --no-build 2>&1)
+        MIGRATION_EXIT_CODE=$?
+        
+        if [ $MIGRATION_EXIT_CODE -eq 0 ]; then
+            echo -e "${GREEN}✅ Migration created: $MIGRATION_NAME${NC}"
+        else
+            handle_error "Failed to create migration. Output: $MIGRATION_ADD_OUTPUT"
+        fi
+    else
+        handle_error "Failed to check for pending model changes. Output: $PENDING_OUTPUT"
+    fi
 else
-    echo -e "${YELLOW}ℹ️  No model changes detected - skipping migration${NC}"
+    # Fallback for older EF Core versions: try to add migration
+    MIGRATION_NAME="AutoMigration_$(date +%Y%m%d_%H%M%S)"
+    
+    # Capture output to check if migration is empty
+    MIGRATION_OUTPUT=$(dotnet ef migrations add "$MIGRATION_NAME" --no-build 2>&1)
+    MIGRATION_EXIT=$?
+    
+    if echo "$MIGRATION_OUTPUT" | grep -qi "no changes"; then
+        echo -e "${YELLOW}ℹ️  No model changes detected - skipping migration${NC}"
+        echo -e "${BLUE}🔍 Debug: Removing empty migration...${NC}"
+        # Remove the empty migration if it was created
+        dotnet ef migrations remove --force --no-build > /dev/null 2>&1
+    elif [ $MIGRATION_EXIT -eq 0 ]; then
+        echo -e "${GREEN}✅ New migration created: $MIGRATION_NAME${NC}"
+    else
+        handle_error "Failed to create migration. Output: $MIGRATION_OUTPUT"
+    fi
 fi
 
 # Step 5: Update the database
 print_header "📊 Step 5: Updating Database"
-dotnet ef database update --no-build
-check_success "Failed to update database" "Database updated successfully"
+if [ -z "$MIGRATION_NAME" ]; then
+    echo -e "${YELLOW}ℹ️  No model changes detected - skipping database update${NC}"
+else
+    dotnet ef database update --no-build
+    check_success "Failed to update database" "Database updated successfully"
+fi
+
 
 # Step 6: Run unit tests with coverage
 print_header "🧪 Step 6: Running Unit Tests with Coverage"
@@ -94,6 +151,7 @@ fi
 chmod +x "$TEST_COVERAGE_SCRIPT"
 bash "$TEST_COVERAGE_SCRIPT" "$SOLUTION_PATH"
 check_success "Unit tests failed" "Unit tests passed with coverage report generated"
+
 
 # Step 7: Run the API
 print_header "🌐 Step 8: Starting API Server"
@@ -119,7 +177,7 @@ else
 fi
 
 # Run the API (this will block until Ctrl+C)
-dotnet run --no-build
+dotnet run --no-build --project "$API_PROJECT_PATH"
 
 # If we get here, the server was stopped
 echo ""

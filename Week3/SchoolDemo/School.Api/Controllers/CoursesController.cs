@@ -32,7 +32,7 @@ namespace School.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             _logger.LogInformation("Getting all courses");
-            return Ok(_mapper.Map<List<CourseDTO>>(await _service.GetAllAsync()));
+            return Ok(await _service.GetAllAsync());
         }
 
         // Get By Id
