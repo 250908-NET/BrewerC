@@ -4,11 +4,11 @@
 # Automates the full development workflow: restore, build, migrate, test, and run
 
 # Configuration
-SOLUTION_PATH="."  # Parent directory containing .sln file
+SOLUTION_PATH="${PWD}"  # Parent directory containing .sln file
 API_PROJECT_PATH="./School.Api"  # Adjust to your API project path
 TEST_PROJECT_PATH="./School.Test"  # Adjust to your test project path
-TEST_COVERAGE_SCRIPT="./test-coverage.sh"  # Path to your existing test coverage script
-SWAGGER_URL="http://localhost:5000/swagger"  # Adjust port if needed
+TEST_COVERAGE_SCRIPT="./test-report.sh"  # Path to your existing test coverage script
+SWAGGER_URL="http://localhost:5202/swagger"  # Adjust port if needed
 
 # Colors for output
 RED='\033[0;31m'
@@ -92,19 +92,10 @@ if [ ! -f "$TEST_COVERAGE_SCRIPT" ]; then
 fi
 
 chmod +x "$TEST_COVERAGE_SCRIPT"
-bash "$TEST_COVERAGE_SCRIPT" "$TEST_PROJECT_PATH"
+bash "$TEST_COVERAGE_SCRIPT" "$SOLUTION_PATH"
 check_success "Unit tests failed" "Unit tests passed with coverage report generated"
 
-# Step 7: Update OpenAPI documentation
-print_header "📚 Step 7: Updating OpenAPI Documentation"
-cd "$API_PROJECT_PATH" || handle_error "API project directory not found"
-
-echo -e "${YELLOW}Generating OpenAPI specification...${NC}"
-# Build to ensure swagger.json is generated
-dotnet build --no-restore > /dev/null 2>&1
-check_success "Failed to generate OpenAPI docs" "OpenAPI documentation updated"
-
-# Step 8: Run the API
+# Step 7: Run the API
 print_header "🌐 Step 8: Starting API Server"
 echo -e "${YELLOW}Starting API on $SWAGGER_URL...${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop the server${NC}"
