@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using School.DTO;
 using School.Models;
 using School.Services;
 using Serilog;
@@ -12,12 +14,14 @@ namespace School.Controllers
     {
         // Fields
         private readonly ILogger<StudentsController> _logger;
+        private readonly IMapper _mapper;
         private readonly IStudentService _service;
 
         // Constructor
-        public StudentsController( ILogger<StudentsController> logger, IStudentService studentService)
+        public StudentsController( ILogger<StudentsController> logger, IMapper mapper, IStudentService studentService)
         {
             _logger = logger;
+            _mapper = mapper;
             _service = studentService;
         }
 
@@ -30,7 +34,27 @@ namespace School.Controllers
         {
             // all private values are already present...
             _logger.LogInformation("Getting all students");
-            return Ok(await _service.GetAllAsync());
+
+            var students = await _service.GetAllAsync();
+
+            // long-hand DTO mapping
+            var studentDTOs = students.Select(s => new StudentDTO
+            {
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                Email = s.Email,
+                UserType = s.UserType,
+                Courses = s.Courses.Select(c => new CourseDTO
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    Description = c.Description
+                }).ToList()
+            });
+            
+
+            return Ok(studentDTOs);
         }
 
         // Get By Id
@@ -40,7 +64,7 @@ namespace School.Controllers
         {
             _logger.LogInformation("Getting student {id}", id);
             var student = await _service.GetByIdAsync(id);
-            return student is not null ? Ok(student) : NotFound();
+            return student is not null ? Ok(_mapper.Map<StudentDTO>(student)) : NotFound();
         }
 
         // Create

@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using School.Data;
+using School.DTO;
 using School.Models;
 using School.Services;
 using School.Repositories;
@@ -11,27 +13,39 @@ var builder = WebApplication.CreateBuilder(args);
 
 string CS = File.ReadAllText("../connection_string.env");
 
-// Add services to the container.
+// Add services to the container...
+// Controller Classes
 builder.Services.AddControllers(); // let's add the controller classes as well...
+
+// DTO to Model Mapping
+builder.Services.AddAutoMapper(typeof(Program));
+
+// debugging and openapi documentation
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// database context for DI
 builder.Services.AddDbContext<SchoolDbContext>(options => options.UseSqlServer(CS));
 
+// repository classes for DI
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
+// service classes for DI
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.ConfigureHttpJsonOptions(options=>
-{
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});
 
+// configure JSON serialization, but we're changing to DTOs now.
+// builder.Services.ConfigureHttpJsonOptions(options=>
+// {
+//     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+//     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+// });
+
+// configure logger
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger(); // read from appsettings.json
 builder.Host.UseSerilog();
 
@@ -185,6 +199,7 @@ app.MapGet("/", () => {
 //     return Results.Ok();
 // });
 
-app.MapControllers(); // To complete our controller implementation, we need to let the framework know that we want to use the controllers.
+// To complete our controller implementation, we need to let the framework know that we want to use the controllers.
+app.MapControllers(); 
 
 app.Run();
