@@ -28,6 +28,7 @@
 - Your API should include logging with Serilog
 - Your API should include validation for any data being handled
 - Your API should include at least 50% unit test coverage
+- *Your API must implement an HTTP request to another API*
 
 ### Frontend
 
