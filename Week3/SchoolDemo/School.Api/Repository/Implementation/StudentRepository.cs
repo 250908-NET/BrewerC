@@ -19,7 +19,7 @@ namespace School.Repositories
             return students;
         }
 
-        public async Task<Student?> GetByIdAsync(int id)
+        public async Task<Student?> GetByIdAsync(string id)
         {
             return await _context.Students.Include(e => e.Courses).FirstOrDefaultAsync(e => e.Id == id);
         }
@@ -32,22 +32,22 @@ namespace School.Repositories
             return newStudent;
         }
         
-        public async Task UpdateAsync(int id, Student student) 
+        public async Task UpdateAsync(string id, Student student) 
         {
             _context.Students.Update(student);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var student = await _context.Students.FindAsync(id);
             _context.Students.Remove(student);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int id) => await _context.Students.AnyAsync(e => e.Id == id);
+        public async Task<bool> Exists(string id) => await _context.Students.AnyAsync(e => e.Id == id);
 
-        public async Task EnrollAsync(int studentId, int courseId) 
+        public async Task EnrollAsync(string studentId, int courseId) 
         {
             var student = await _context.Students
                 .Include(s => s.Courses)

@@ -15,7 +15,7 @@ namespace School.Services
 
         public async Task<List<Student>> GetAllAsync() => await _repo.GetAllAsync();
 
-        public async Task<Student?> GetByIdAsync(int id) 
+        public async Task<Student?> GetByIdAsync(string id) 
         {
             return await _repo.GetByIdAsync(id);
         }
@@ -27,18 +27,18 @@ namespace School.Services
         }
 
         // the short-hand way
-        public async Task DeleteAsync(int id) 
+        public async Task DeleteAsync(string id) 
         {
             await _repo.DeleteAsync(id);
         }
         
-        public async Task UpdateAsync(int id, Student student) 
+        public async Task UpdateAsync(string id, Student student) 
         {
             await _repo.UpdateAsync(id, student);
         }
 
-        public async Task<bool> Exists(int id) => await _repo.Exists(id);
+        public async Task<bool> Exists(string id) => await _repo.Exists(id);
 
-        public async Task EnrollAsync(int studentId, int courseId) => await _repo.EnrollAsync(studentId, courseId);
+        public async Task EnrollAsync(string studentId, int courseId) => await _repo.EnrollAsync(studentId, courseId);
     }
 }

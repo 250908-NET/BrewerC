@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using School.Models;
 
 namespace School.Data;
 
-public class SchoolDbContext : DbContext
+public class SchoolDbContext : IdentityDbContext<User>
 {
     // Fields
     public DbSet<Student> Students { get; set; }
@@ -17,6 +18,9 @@ public class SchoolDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+        base.OnModelCreating(modelBuilder);
+            
         // Course configuration
         modelBuilder.Entity<Course>(entity =>
         {
@@ -39,7 +43,6 @@ public class SchoolDbContext : DbContext
            // Student-Course many-to-many relationship
         modelBuilder.Entity<Student>(entity =>
         {
-            entity.HasKey(e => e.Id);
             
             entity.Property(e => e.FirstName)
                 .IsRequired()
@@ -48,10 +51,6 @@ public class SchoolDbContext : DbContext
             entity.Property(e => e.LastName)
                 .IsRequired()
                 .HasMaxLength(50);
-                
-            entity.Property(e => e.Email)
-                .IsRequired()
-                .HasMaxLength(100);
 
             entity.HasMany(s => s.Courses)
             .WithMany(c => c.Students)
@@ -69,8 +68,6 @@ public class SchoolDbContext : DbContext
         // Instructor configuration
         modelBuilder.Entity<Instructor>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            
             entity.Property(e => e.FirstName)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -85,6 +82,5 @@ public class SchoolDbContext : DbContext
                 .IsRequired(false);
         });
     
-        base.OnModelCreating(modelBuilder);
     }
 }

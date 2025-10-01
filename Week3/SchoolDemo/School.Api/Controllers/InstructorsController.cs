@@ -40,7 +40,7 @@ namespace School.Controllers
         // Get By Id
         [HttpGet("{id}", Name = "GetInstructorById")]
         // "/instructors/{id}"
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(string id)
         {
             _logger.LogInformation("Getting instructor {id}", id);
             var instructor = await _service.GetByIdAsync(id);
@@ -60,7 +60,7 @@ namespace School.Controllers
         // Update
         [HttpPut("{id}", Name = "UpdateInstructor")]
         // "/instructors/{id}"
-        public async Task<IActionResult> UpdateAsync(int id, Instructor instructor)
+        public async Task<IActionResult> UpdateAsync(string id, Instructor instructor)
         {
             _logger.LogInformation("Updating instructor {id}", id);
             if (! await _service.Exists(id)) 
@@ -75,7 +75,7 @@ namespace School.Controllers
         // Delete
         [HttpDelete("{id}", Name = "DeleteInstructor")]
         // "/instructors/{id}"
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             _logger.LogInformation("Deleting instructor {id}", id);
             await _service.DeleteAsync(id);

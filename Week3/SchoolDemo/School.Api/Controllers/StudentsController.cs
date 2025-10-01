@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.DTO;
 using School.Models;
@@ -44,7 +45,6 @@ namespace School.Controllers
                 FirstName = s.FirstName,
                 LastName = s.LastName,
                 Email = s.Email,
-                UserType = s.UserType,
                 Courses = s.Courses.Select(c => new CourseDTO
                 {
                     Id = c.Id,
@@ -60,7 +60,7 @@ namespace School.Controllers
         // Get By Id
         [HttpGet("{id}", Name = "GetStudentById")]
         // "/students/{id}"
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(string id)
         {
             _logger.LogInformation("Getting student {id}", id);
             var student = await _service.GetByIdAsync(id);
@@ -68,6 +68,7 @@ namespace School.Controllers
         }
 
         // Create
+        [Authorize(Roles = "Instructor")]
         [HttpPost(Name = "CreateStudent")]
         // "/students"
         public async Task<IActionResult> CreateAsync([FromBody] Student student)
@@ -78,9 +79,11 @@ namespace School.Controllers
         }
 
         // Update
+        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Student")]
         [HttpPut("{id}", Name = "UpdateStudent")]
         // "/students/{id}"
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] Student student)
+        public async Task<IActionResult> UpdateAsync(string id, [FromBody] Student student)
         {
             _logger.LogInformation("Updating student {id}", id);
             if (! await _service.Exists(id)) 
@@ -93,9 +96,10 @@ namespace School.Controllers
         }
 
         // Delete
+        [Authorize(Roles = "Instructor")]
         [HttpDelete("{id}", Name = "DeleteStudent")]
         // "/students/{id}"
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             _logger.LogInformation("Deleting student {id}", id);
             await _service.DeleteAsync(id);

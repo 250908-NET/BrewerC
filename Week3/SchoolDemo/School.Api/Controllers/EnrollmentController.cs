@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.Models;
 using School.Services;
@@ -24,8 +25,10 @@ namespace School.Controllers
         // Methods
 
         // Enroll Student In Course
+        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Instructor")]
         [HttpPost("{studentId}/{courseId}", Name = "EnrollStudentInCourse")]
-        public async Task<IActionResult> EnrollAsync(int studentId, int courseId)
+        public async Task<IActionResult> EnrollAsync(string studentId, int courseId)
         {
             _logger.LogInformation("Enrolling student {studentId} in course {courseId}", studentId, courseId);
             await _service.EnrollAsync(studentId, courseId);

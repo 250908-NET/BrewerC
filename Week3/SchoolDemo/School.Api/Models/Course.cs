@@ -12,7 +12,7 @@ public class Course
 
     public string? Description { get; set; }
 
-    public int? InstructorId { get; set; }
+    public string? InstructorId { get; set; }
 
     public Instructor? Instructor { get; set; } // EF Core will recognize the other Models/tables for the references
 
