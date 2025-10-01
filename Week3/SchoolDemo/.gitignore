@@ -3,11 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# unit testing results
-*coverage/
-
 # dotenv files
-.env
+*.env
 
 # User-specific files
 *.rsuser
