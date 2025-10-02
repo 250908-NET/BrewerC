@@ -108,7 +108,7 @@ builder.Services.AddAuthorization( options =>
 {
     options.AddPolicy("Students", policy => policy.RequireClaim("Student"));
     options.AddPolicy("Instructors", policy => policy.RequireClaim("Instructor"));
-    options.AddPolicy("God", policy => policy.RequireClaim("God"));
+    options.AddPolicy("SysAdmin", policy => policy.RequireClaim("SysAdmin"));
 });
 
 // repository classes for DI
@@ -289,4 +289,69 @@ app.MapGet("/", () => {
 // To complete our controller implementation, we need to let the framework know that we want to use the controllers.
 app.MapControllers(); 
 
+
+// I want to add a default SysAdmin to the system, so that I don't have to go through the UI to create one.
+// I don't want to leave the ability to cretae a sysadmin open to the public, and only an admin should be able to create one.
+// Which presents a "chicken or the egg" situation for us. This is just one solution, but there are others.
+// (The other solution is to create a migration that creates the sysadmin, and then run it.)
+
+await SeedAdmin(app);
+
 app.Run();
+
+
+static async Task SeedAdmin(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+        try
+        {
+            // Check if admin already exists
+            var existingAdmin = await userManager.FindByEmailAsync("admin@school.edu");
+            if (existingAdmin != null)
+            {
+                logger.LogInformation("SysAdmin user already exists");
+                return;
+            }
+
+            // Create SysAdmin role if it doesn't exist
+            logger.LogInformation("No SysAdmin user found, Creating SysAdmin role");
+            if (!await roleManager.RoleExistsAsync("SysAdmin"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("SysAdmin"));
+                logger.LogInformation("Created SysAdmin role");
+            }
+
+            // Create admin user
+            var sysAdmin = new SysAdmin
+            {
+                UserName = "admin@school.edu",
+                Email = "admin@school.edu",
+                FirstName = "Sys",
+                LastName = "Admin",
+                EmailConfirmed = true // Optional: auto-confirm email
+            };
+
+            var result = await userManager.CreateAsync(sysAdmin, "Admin123!");
+
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(sysAdmin, "SysAdmin");
+                logger.LogInformation("SysAdmin user created successfully");
+            }
+            else
+            {
+                logger.LogError("Failed to create SysAdmin: {Errors}", 
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while seeding the database");
+        }
+    }
+}

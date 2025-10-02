@@ -194,11 +194,6 @@ namespace School.Api.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -249,6 +244,11 @@ namespace School.Api.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -261,7 +261,7 @@ namespace School.Api.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
 
                     b.UseTphMappingStrategy();
                 });
@@ -296,6 +296,13 @@ namespace School.Api.Migrations
                     b.HasBaseType("School.Models.User");
 
                     b.HasDiscriminator().HasValue("Student");
+                });
+
+            modelBuilder.Entity("School.Models.SysAdmin", b =>
+                {
+                    b.HasBaseType("School.Models.User");
+
+                    b.HasDiscriminator().HasValue("SysAdmin");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

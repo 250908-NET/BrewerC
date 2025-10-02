@@ -7,6 +7,7 @@ namespace School.Data;
 public class SchoolDbContext : IdentityDbContext<User>
 {
     // Fields
+    public DbSet<SysAdmin> SysAdmins { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Instructor> Instructors { get; set; }
     public DbSet<Course> Courses { get; set; }
@@ -20,6 +21,12 @@ public class SchoolDbContext : IdentityDbContext<User>
     {
         
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+        .HasDiscriminator<string>("UserType")
+        .HasValue<Student>("Student")
+        .HasValue<Instructor>("Instructor")
+        .HasValue<SysAdmin>("SysAdmin");
             
         // Course configuration
         modelBuilder.Entity<Course>(entity =>
@@ -80,6 +87,17 @@ public class SchoolDbContext : IdentityDbContext<User>
                 .WithOne(c => c.Instructor)
                 .HasForeignKey(c => c.InstructorId)
                 .IsRequired(false);
+        });
+
+         modelBuilder.Entity<SysAdmin>(entity =>
+        {
+            entity.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+                
+            entity.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
         });
     
     }
