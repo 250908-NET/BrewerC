@@ -34,6 +34,13 @@ namespace School.Controllers
         public async Task<IActionResult> GetAllPostsAsync()
         {
             _logger.LogInformation("Getting all posts");
+
+            var results = await client.GetAsync(url);
+
+
+            // Console.WriteLine(results.Content.ReadAsStringAsync().Result);
+
+            var PostList = await results.Content.ReadFromJsonAsync<List<PostDTO>>();
             return Ok("Getting all posts");
         }
     }
