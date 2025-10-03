@@ -10,6 +10,7 @@ namespace School.Data
         {
             CreateMap<Student, StudentDTO>();
             CreateMap<Instructor, InstructorDTO>();
+            CreateMap<Instructor, InstructorNoPayrollDTO>();
             CreateMap<Course, CourseDTO>();
         }
     }
