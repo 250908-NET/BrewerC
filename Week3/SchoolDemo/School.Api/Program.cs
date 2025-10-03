@@ -22,6 +22,9 @@ string CS = File.ReadAllText("../connection_string.env");
 // Controller Classes
 builder.Services.AddControllers(); // let's add the controller classes as well...
 
+// some dependencies for cookies! 
+builder.Services.AddHttpContextAccessor();
+
 // DTO to Model Mapping
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -117,6 +120,7 @@ builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 // service classes for DI
+builder.Services.AddScoped<ILanguagePreferenceService, LanguagePreferenceService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();

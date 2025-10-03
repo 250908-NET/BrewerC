@@ -29,6 +29,7 @@
 - Your API should include validation for any data being handled
 - Your API should include at least 50% unit test coverage
 - *Your API must implement an HTTP request to another API* 3rd party api
+- *Your API must provide a cookie to the client*
 
 ### Frontend
 
