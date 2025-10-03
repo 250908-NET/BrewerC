@@ -28,7 +28,7 @@ namespace School.Controllers
 
         // Methods
         // Get All No Payroll
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, SysAdmin")]
         [HttpGet(Name = "GetAllInstructorsNoPayroll")]
         // "/instructors"
         public async Task<IActionResult> GetAllNoPayrollAsync()
@@ -42,7 +42,7 @@ namespace School.Controllers
             *  I've got a BadRequest response going out for each method if there is an
             *  exception, but it would be much better if I could return more specifics
             *  about what went wrong. I'm working on it! */
-            
+
             // all private values are already present...
             _logger.LogInformation("Getting all instructors without payroll");
             try{
@@ -56,8 +56,7 @@ namespace School.Controllers
         }
 
         // Get All
-        [Authorize(Roles = "Instructor")]
-        [Authorize(Roles = "SysAdmin")]
+        [Authorize(Roles = "Instructor, SysAdmin")]
         [HttpGet("details", Name = "GetAllInstructors")]
         // "/instructors/details"
         public async Task<IActionResult> GetAllAsync()
@@ -75,8 +74,7 @@ namespace School.Controllers
         }
 
         // Get By Id
-        [Authorize(Roles = "Instructor")]
-        [Authorize(Roles = "SysAdmin")]
+        [Authorize(Roles = "Instructor, SysAdmin")]
         [HttpGet("{id}", Name = "GetInstructorById")]
         // "/instructors/{id}"
         public async Task<IActionResult> GetByIdAsync(string id)

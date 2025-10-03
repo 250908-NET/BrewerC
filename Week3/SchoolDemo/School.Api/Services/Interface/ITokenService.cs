@@ -8,6 +8,12 @@ namespace School.Services
 {
     public interface ITokenService
     {
-        string GenerateToken(User user, IList<string> roles);
+        string GenerateAccessToken(User user, IList<string> roles);
+        string GenerateRefreshToken();
+        Task<RefreshToken> CreateRefreshTokenAsync(string userId, string token, string ipAddress);
+        Task<RefreshToken?> GetRefreshTokenAsync(string token);
+        Task RevokeRefreshTokenAsync(string token, string ipAddress, string? replacedByToken = null);
+        Task<bool> ValidateRefreshTokenAsync(string token);
+        Task CleanupExpiredTokensAsync(string userId);
     }
 }

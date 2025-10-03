@@ -11,6 +11,7 @@ public class SchoolDbContext : IdentityDbContext<User>
     public DbSet<Student> Students { get; set; }
     public DbSet<Instructor> Instructors { get; set; }
     public DbSet<Course> Courses { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     
     // Methods
     // You still need a constructor!
@@ -27,8 +28,7 @@ public class SchoolDbContext : IdentityDbContext<User>
         .HasValue<Student>("Student")
         .HasValue<Instructor>("Instructor")
         .HasValue<SysAdmin>("SysAdmin");
-            
-        // Course configuration
+
         modelBuilder.Entity<Course>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -72,7 +72,6 @@ public class SchoolDbContext : IdentityDbContext<User>
                 });
         });
 
-        // Instructor configuration
         modelBuilder.Entity<Instructor>(entity =>
         {
             entity.Property(e => e.FirstName)
@@ -99,6 +98,18 @@ public class SchoolDbContext : IdentityDbContext<User>
                 .IsRequired()
                 .HasMaxLength(50);
         });
-    
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(rt => rt.Id);
+            
+            entity.HasIndex(rt => rt.Token)
+                .IsUnique();
+            
+            entity.HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
