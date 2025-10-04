@@ -25,8 +25,7 @@ namespace School.Controllers
         // Methods
 
         // Enroll Student In Course
-        [Authorize(Roles = "Student")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Student, Instructor")]
         [HttpPost("{studentId}/{courseId}", Name = "EnrollStudentInCourse")]
         public async Task<IActionResult> EnrollAsync(string studentId, int courseId)
         {

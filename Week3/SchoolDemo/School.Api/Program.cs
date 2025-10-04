@@ -115,6 +115,7 @@ builder.Services.AddAuthorization( options =>
 });
 
 // repository classes for DI
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();

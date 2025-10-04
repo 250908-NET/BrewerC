@@ -100,16 +100,130 @@ namespace School.Controllers
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            var token = _tokenService.GenerateToken(user, roles);
+            var accessToken = _tokenService.GenerateAccessToken(user, roles);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            var ipAddress = GetIpAddress();
+            await _tokenService.CreateRefreshTokenAsync(user.Id, refreshToken, ipAddress);
+
+            await _tokenService.CleanupExpiredTokensAsync(user.Id);
+
+            SetRefreshTokenCookie(refreshToken);
 
             _logger.LogInformation("User logged in: {Email}", dto.Email);
 
             return Ok(new AuthResponseDto
             {
-                Token = token,
+                Token = accessToken,
                 Email = user.Email,
                 Roles = roles.ToList()
             });
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized(new { message = "Refresh token is required" });
+            }
+
+            var storedToken = await _tokenService.GetRefreshTokenAsync(refreshToken);
+
+            if (storedToken == null || !storedToken.IsActive)
+            {
+                return Unauthorized(new { message = "Invalid or expired refresh token, login again" });
+            }
+
+            var user = storedToken.User;
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // Generate new tokens
+            var newAccessToken = _tokenService.GenerateAccessToken(user, roles);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            // Revoke old refresh token and create new one
+            var ipAddress = GetIpAddress();
+            await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress, newRefreshToken);
+            await _tokenService.CreateRefreshTokenAsync(user.Id, newRefreshToken, ipAddress);
+
+            // Set new refresh token cookie
+            SetRefreshTokenCookie(newRefreshToken);
+
+            _logger.LogInformation("Token refreshed for user: {Email}", user.Email);
+
+            return Ok(new AuthResponseDto
+            {
+                Token = newAccessToken,
+                Email = user.Email,
+                Roles = roles.ToList()
+            });
+        }
+
+        [HttpPost("revoke")]
+        public async Task<IActionResult> RevokeToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest(new { message = "Refresh token is required" });
+            }
+
+            var ipAddress = GetIpAddress();
+            await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress);
+
+            // Clear the cookie
+            Response.Cookies.Delete("refreshToken");
+
+            _logger.LogInformation("Token revoked");
+
+            return Ok(new { message = "Token revoked successfully" });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                var ipAddress = GetIpAddress();
+                await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress);
+            }
+
+            // Clear the cookie
+            Response.Cookies.Delete("refreshToken");
+
+            _logger.LogInformation("User logged out");
+
+            return Ok(new { message = "Logged out successfully" });
+        }
+
+        // Helper methods
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Set to true in production with HTTPS
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
+        private string GetIpAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                return Request.Headers["X-Forwarded-For"].ToString();
+            }
+
+            return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
         }
     }
 }

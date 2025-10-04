@@ -79,8 +79,7 @@ namespace School.Controllers
         }
 
         // Update
-        [Authorize(Roles = "Instructor")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Instructor, Student")]
         [HttpPut("{id}", Name = "UpdateStudent")]
         // "/students/{id}"
         public async Task<IActionResult> UpdateAsync(string id, [FromBody] Student student)
