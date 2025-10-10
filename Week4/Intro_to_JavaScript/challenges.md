@@ -171,6 +171,7 @@ Use this example:
 ```
 
 `onclick` is just one event we can use. Think about anything that you've done on a website that triggered a reaction:  
+
 - clicks
 - hovering
 - selecting
@@ -183,10 +184,11 @@ anything that we can detect can be a trigger for a function.
 Add another button that runs a new function when clicked.
 Example:
 
-* Button text: "Tell me a joke"
-* Function displays an `alert()` with a funny message.
+- Button text: "Tell me a joke"
+- Function displays an `alert()` with a funny message.
 
 ---
+
 ## Task 6: Using Input Fields
 
 **Goal:** Get user input from a text box and display a message.
@@ -226,18 +228,18 @@ Modify the function so that if the input is empty, it alerts:
 
 Create an HTML page with:
 
-* A number input box
-* A button that squares the number
-* An alert showing the result
+- A number input box
+- A button that squares the number
+- An alert showing the result
 
 **Hint:**
 
-* Use `document.getElementById()` to get the input
-* Use your earlier `square()` function
+- Use `document.getElementById()` to get the input
+- Use your earlier `square()` function
 
 Example result:
 
-```
+```javascript
 Enter a number: 4
 [Square It!] → Alert: "The square is 16"
 ```
@@ -246,13 +248,13 @@ Enter a number: 4
 
 **Recommended Reading:**
 
-* [MDN JavaScript First Steps](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps)
-* [W3Schools JavaScript Tutorial](https://www.w3schools.com/js/)
-* [JavaScript.info - The Modern Tutorial](https://javascript.info)
+- [MDN JavaScript First Steps](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps)
+- [W3Schools JavaScript Tutorial](https://www.w3schools.com/js/)
+- [JavaScript.info - The Modern Tutorial](https://javascript.info)
 
 ---
 
-# Part 2 
+# Part 2
 
 ### Working with External Script Files
 
@@ -433,9 +435,9 @@ Add buttons for **Subtract**, **Multiply**, and **Divide**, each calling their o
 
 **Recommended Reading:**
 
-* [MDN – Adding JavaScript to a Web Page](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/What_is_JavaScript#adding_javascript_to_a_page)
-* [JavaScript.info – The Script Tag](https://javascript.info/script)
-* [W3Schools – JS HTML DOM Tutorial](https://www.w3schools.com/js/js_htmldom.asp)
+- [MDN – Adding JavaScript to a Web Page](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/What_is_JavaScript#adding_javascript_to_a_page)
+- [JavaScript.info – The Script Tag](https://javascript.info/script)
+- [W3Schools – JS HTML DOM Tutorial](https://www.w3schools.com/js/js_htmldom.asp)
 
 ---
 
@@ -541,8 +543,8 @@ You can modify an element’s style directly through JavaScript.
 
 Create two buttons:
 
-* One makes a paragraph **red and bold**
-* The other resets it to normal text
+- One makes a paragraph **red and bold**
+- The other resets it to normal text
 
 ---
 
@@ -653,9 +655,9 @@ Combine everything you’ve learned!
 
 **Goal:** Create a to-do list that lets users:
 
-* Add tasks
-* Mark tasks as completed
-* Remove tasks
+- Add tasks
+- Mark tasks as completed
+- Remove tasks
 
 **Example structure:**
 
@@ -709,9 +711,9 @@ button.addEventListener("click", function() {
 
 **Recommended Reading:**
 
-* [MDN – Introduction to the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)
-* [JavaScript.info – Modifying the Document](https://javascript.info/modifying-document)
-* [W3Schools – JavaScript HTML DOM](https://www.w3schools.com/js/js_htmldom.asp)
+- [MDN – Introduction to the DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)
+- [JavaScript.info – Modifying the Document](https://javascript.info/modifying-document)
+- [W3Schools – JavaScript HTML DOM](https://www.w3schools.com/js/js_htmldom.asp)
 
 ---
 
@@ -727,6 +729,7 @@ They were introduced in **ES6 (ECMAScript 2015)** and are often used for cleaner
 ## Basic Syntax
 
 ### Regular Function
+
 ```js
 function greet(name) {
   return `Hello, ${name}!`;
@@ -759,8 +762,8 @@ const greet = name => `Hello, ${name}!`;
 
 Notes:
 
-* Parentheses `()` around parameters can be **omitted** if there’s only one parameter.
-* If there are **zero or multiple parameters**, parentheses **are required**:
+- Parentheses `()` around parameters can be **omitted** if there’s only one parameter.
+- If there are **zero or multiple parameters**, parentheses **are required**:
 
   ```js
   const sayHello = () => 'Hello!';
@@ -836,7 +839,7 @@ const person = {
 
 ---
 
-### Task 18: Shorten It!
+### Task 18: Shorten It
 
 Convert this function into an arrow function:
 
@@ -933,12 +936,12 @@ fetch(url)
   });
 ````
 
-### Breakdown:
+### Breakdown
 
-* `fetch(url)` sends a request to the given URL.
-* `.then(response => response.json())` converts the response body into a JavaScript object.
-* The next `.then()` handles the resulting data.
-* `.catch()` handles any errors that occur.
+- `fetch(url)` sends a request to the given URL.
+- `.then(response => response.json())` converts the response body into a JavaScript object.
+- The next `.then()` handles the resulting data.
+- `.catch()` handles any errors that occur.
 
 ---
 
@@ -1066,11 +1069,11 @@ fetch(url)
 
 ## Summary
 
-* `fetch()` is used for network requests.
-* Responses must often be converted using `.json()`.
-* `.then()` handles asynchronous data once it’s available.
-* `.catch()` helps deal with errors.
-* You can connect fetch requests with DOM manipulation for interactive pages.
+- `fetch()` is used for network requests.
+- Responses must often be converted using `.json()`.
+- `.then()` handles asynchronous data once it’s available.
+- `.catch()` helps deal with errors.
+- You can connect fetch requests with DOM manipulation for interactive pages.
 
 ---
 
@@ -1082,7 +1085,7 @@ fetch(url)
 
 ---
 
-**Recommended Reading **
+**Recommended Reading**
 
 ### Fetch Requests and APIs
 
