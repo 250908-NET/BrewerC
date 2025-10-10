@@ -28,7 +28,7 @@
 ### Frontend
 - Your frontend must be written in "vanilla JavaScript", with HTML5, CSS3, and JavaScript
 - Your frontend must interact with your API for data persistence
-- Your frontend must use the React library. 
+- Your frontend MAY use the React library. 
     - Your frontend must include at least three components, with at least one nested component. (At least one parent-child relationship, and at least one other unrelated component).
         - Your components should include at least one component that implements `useState`.
         - Your components should include at least one component with props.
